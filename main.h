@@ -3,6 +3,7 @@
 
 #include "camera.h"
 #include "orthographic_camera.h"
+#include "pinhole_camera.h"
 #include "scene.h"
 #include "buffer.h"
 #include "raytracer.h"
