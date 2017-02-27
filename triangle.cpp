@@ -10,7 +10,9 @@
 
 Triangle::Triangle( void ){}
 
-Triangle::Triangle( const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c ) :
+Triangle::Triangle( glm::vec3 color, const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c ) :
+Primitive::Primitive{color},
+
 a_{ a },
 b_{ b },
 c_{ c }

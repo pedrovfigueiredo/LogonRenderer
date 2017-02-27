@@ -27,21 +27,26 @@ bool Scene::intersect( const Ray &ray,
 
 void Scene::load( void ) 
 {
-    //cabeça
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{  0.0f, 0.0f,  -7.0f }, 0.8f } ) );
     
-    //chapéu
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Triangle{ glm::vec3{  -0.9f, 0.5f, -2.5f }, glm::vec3{  0.9f, 0.5f, -2.5f }, glm::vec3{  0.0f, 1.0f, -2.5f } }) );
+    //esferas com z = 0 // Cor Vermelha
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
+        glm::vec3{ -0.35f, 0.3f, 0.00f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
+        glm::vec3{ 0.35f, 0.3f, 0.00f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
+        glm::vec3{ -0.35f, -0.3f, 0.00f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
+        glm::vec3{ 0.35f, -0.3f, 0.00f }, 0.2f } ) );
     
-    //olhos
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ -0.35f, 0.2f, -1.25f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0.35f, 0.2f, -1.25f }, 0.2f } ) );
-    
-    //nariz
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Triangle{ glm::vec3{  -0.15f, -0.15f, -2.0f }, glm::vec3{  0.15f, -0.15f, -2.0f }, glm::vec3{  0.0f, 0.15f, -2.0f } }) );
-    
-    //boca
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Triangle{ glm::vec3{  -0.5f, -0.3f, -1.5f }, glm::vec3{  0.5f, -0.3f, -1.5f }, glm::vec3{  0.0f, -0.7f, -1.5f } }) );
+    //esferas com z = -3 // Cor Verde
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
+        glm::vec3{ -0.35f, 0.3f, -1.50f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
+        glm::vec3{ 0.35f, 0.3f, -1.50f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
+        glm::vec3{ -0.35f, -0.3f, -1.50f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
+        glm::vec3{ 0.35f, -0.3f, -1.50f }, 0.2f } ) );
     
     //primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{  0.0f, 0.5f, -3.0f }, 0.2f } ) );
 }

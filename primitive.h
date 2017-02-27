@@ -2,6 +2,7 @@
 #define PRIMITIVE_H_
 
 #include <memory>
+#include <glm/glm.hpp>
 
 #include "ray.h"
 #include "intersection_record.h"
@@ -12,12 +13,16 @@ public:
 
     typedef std::unique_ptr< Primitive > PrimitiveUniquePtr;
 
-    Primitive( void );
+    Primitive (void);
+    
+    Primitive( glm::vec3 color );
 
     virtual ~Primitive( void );
 
     virtual bool intersect( const Ray &ray,
                             IntersectionRecord &intersection_record ) const = 0;
+    
+    glm::vec3 color_;
 };
 
 #endif /* PRIMITIVE_H_ */
