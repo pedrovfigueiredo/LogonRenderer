@@ -16,7 +16,10 @@ int main()
         glm::vec3{ 0.0f, 0.0f,  -1.0f } };   // look at
     Scene scene{};
     
-    scene.load();
+    //scene.load();
+    
+    if (!scene.load("/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/teapot.obj"))
+        return EXIT_FAILURE;
     
     Buffer rendering_buffer{ x_resolution, y_resolution };
     glm::vec3 background_color{ 0.0f, 0.0f, 0.0f };

@@ -51,3 +51,73 @@ void Scene::load( void )
     //primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{  0.0f, 0.5f, -3.0f }, 0.2f } ) );
 }
 
+bool Scene::load( const std::string& pFile )
+{
+    // Create an instance of the Importer class
+    Assimp::Importer importer;
+    // And have it read the given file with some example postprocessing
+    // Usually - if speed is not the most important aspect for you - you'll
+    // propably to request more postprocessing than we do in this example.
+    const aiScene* scene = importer.ReadFile( pFile,
+                                             aiProcess_CalcTangentSpace       |
+                                             aiProcess_Triangulate            |
+                                             aiProcess_JoinIdenticalVertices  |
+                                             aiProcess_SortByPType);
+    
+    // If the import failed, report it
+    if( !scene)
+    {
+        std::cerr << importer.GetErrorString();
+        return false;
+    }
+    
+    int red,green,blue;
+    
+    
+    
+    
+    for (unsigned int mesh = 0 ; mesh < scene->mNumMeshes; mesh++) {
+        for (unsigned int face = 0; face < scene->mMeshes[mesh]->mNumFaces; face++) {
+            
+            if (scene->mMeshes[mesh]->mFaces[face].mNumIndices != 3) {
+                std::cerr << "Object is not triangulated.\n Finishing...";
+                return false;
+            }
+            
+            red = rand() % (int)(255 + 1);
+            green = rand() % (int)(255 + 1);
+            blue = rand() % (int)(255 + 1);
+            
+            
+            primitives_.push_back(Primitive::PrimitiveUniquePtr( new Triangle{
+                //color
+                glm::vec3{red,green,blue},
+                
+                // a
+                glm::vec3{
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].x,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].y,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].z
+                },
+                
+                // b
+                glm::vec3{
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].x,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].y,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].z
+                },
+                
+                // c
+                glm::vec3{
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].x,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].y,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].z
+                },
+            } ) );
+            
+        }
+    }
+    
+    return true;
+}
+

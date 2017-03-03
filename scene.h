@@ -6,6 +6,11 @@
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
+#include <random>
+
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
 
 #include "primitive.h"
 #include "sphere.h" 
@@ -23,6 +28,8 @@ public:
                     IntersectionRecord &intersection_record ) const;
 
     void load( void );
+    
+    bool load( const std::string& pFile );
 
     std::vector< Primitive::PrimitiveUniquePtr > primitives_;
 
