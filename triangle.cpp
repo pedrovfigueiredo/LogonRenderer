@@ -61,6 +61,7 @@ bool Triangle::intersect( const Ray &ray, IntersectionRecord &intersection_recor
     intersection_record.t_ = t;
     intersection_record.position_ = ray.origin_ + intersection_record.t_ * ray.direction_;
     intersection_record.normal_ = glm::normalize( intersection_record.position_ - glm::vec3 {(a_.x + b_.x + c_.x)/3, (a_.y + b_.y + c_.y)/3, (a_.z + b_.z + c_.z)/3 } );
+    intersection_record.color = color_;
     
     return true;
 }

@@ -11,12 +11,13 @@ int main()
         1.25f,
         3.00f,
         glm::ivec2{ x_resolution, y_resolution },
-        glm::vec3{ 0.0f, 0.0f,  1.0f },     // position
+        glm::vec3{ 0.0f, 0.0f,  350.0f },     // position
         glm::vec3{ 0.0f, 1.0f,  0.0f },     // up
         glm::vec3{ 0.0f, 0.0f,  -1.0f } };   // look at
-    Scene scene{};
     
-    //scene.load();
+    
+    Scene scene;
+    
     
     if (!scene.load("/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/teapot.obj"))
         return EXIT_FAILURE;

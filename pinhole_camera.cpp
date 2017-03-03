@@ -40,7 +40,7 @@ Ray PinHoleCamera::getWorldSpaceRay( const glm::vec2 &pixel_coord ) const
     float u = ((pixel_coord[0])/static_cast< float >(resolution_[0]));
     float v = ((pixel_coord[1])/static_cast< float >(resolution_[1]));
     
-    glm::vec3 s {u*a + min_x_,v*b + max_y_, c};
+    glm::vec3 s {u*a + min_x_,v*b - min_y_, c};
    
     
     return Ray{ position_,
