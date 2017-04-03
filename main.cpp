@@ -9,27 +9,39 @@ int main()
         1.25f,
         -1.25f,
         1.25f,
-        3.00f,
+        2.00f,
         glm::ivec2{ x_resolution, y_resolution },
-        glm::vec3{ 0.0f, 0.0f,  1.0f },     // position
-        glm::vec3{ 0.0f, 1.0f,  0.0f },     // up
-        glm::vec3{ 0.0f, 0.0f,  -1.0f } };   // look at
-    Scene scene{};
+        glm::vec3{ 0.0f, 1.0f,  2.50f },     // position
+        glm::vec3{ 0.0f, 10.0f,  0.0f },     // up
+        glm::vec3{ 0.0f, 1.0f,  -1.0f } };   // look at
     
-    scene.load();
+    
+    Scene scene;
+    
+    
+    if (!scene.load("/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/CornellBox-Original.obj"))
+        return EXIT_FAILURE;
+    
+    
+    //scene.load();
     
     Buffer rendering_buffer{ x_resolution, y_resolution };
     glm::vec3 background_color{ 0.0f, 0.0f, 0.0f };
+    const int numRaysPerPixel = 10;
+    const int maximumDepth = 5;
+    const int numThreads = 4;
     
     // Set up the renderer.
-    RayTracer rt( camera,
+    PathTracer patht( camera,
                  scene,
                  background_color,
-                 rendering_buffer );
+                 rendering_buffer,
+                 numRaysPerPixel,
+                 maximumDepth);
     
-    rt.integrate(); // Renders the final image.
+    patht.integrate(numThreads); // Renders the final image.
     
-    // Save the rendered image to a .ppm file.
+    // Save the rendered image to a .ppm file and convert it to a png afterwards.
     rendering_buffer.save( "/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/output_image.ppm" );
     
     return EXIT_SUCCESS;

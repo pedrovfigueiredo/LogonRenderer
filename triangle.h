@@ -13,13 +13,14 @@
 #include "primitive.h"
 #include "intersection_record.h"
 #include "ray.h"
+#include "material.h"
 
 class Triangle : public Primitive
 {
 public:
     Triangle( void );
     
-    Triangle( glm::vec3 color, const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c);
+    Triangle( Material* material, const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c);
     
     bool intersect( const Ray &ray,
                    IntersectionRecord &intersection_record ) const;

@@ -28,26 +28,84 @@ bool Scene::intersect( const Ray &ray,
 void Scene::load( void ) 
 {
     
-    //esferas com z = 0 // Cor Vermelha
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ -0.35f, 0.3f, 0.00f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ 0.35f, 0.3f, 0.00f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ -0.35f, -0.3f, 0.00f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ 0.35f, -0.3f, 0.00f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource{ glm::vec3{ 30, 30, 30 }},
+        glm::vec3{ -0.35f, -0.5f, 0.00f }, 0.1f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource{ glm::vec3{ 30, 30, 30 }},
+        glm::vec3{ 0.35f, -0.5f, 0.00f }, 0.1f } ) );
     
-    //esferas com z = -3 // Cor Verde
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ -0.35f, 0.3f, -1.50f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ 0.35f, 0.3f, -1.50f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ -0.35f, -0.3f, -1.50f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ 0.35f, -0.3f, -1.50f }, 0.2f } ) );
+}
+
+bool Scene::load( const std::string& pFile )
+{
+    // Create an instance of the Importer class
+    Assimp::Importer importer;
+    // And have it read the given file with some example postprocessing
+    // Usually - if speed is not the most important aspect for you - you'll
+    // propably to request more postprocessing than we do in this example.
+    const aiScene* scene = importer.ReadFile( pFile,
+                                             aiProcess_CalcTangentSpace       |
+                                             aiProcess_Triangulate            |
+                                             aiProcess_JoinIdenticalVertices  |
+                                             aiProcess_SortByPType);
     
-    //primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{  0.0f, 0.5f, -3.0f }, 0.2f } ) );
+    // If the import failed, report it
+    if( !scene)
+    {
+        std::cerr << importer.GetErrorString();
+        return false;
+    }
+    
+    for (unsigned int mesh = 0 ; mesh < scene->mNumMeshes; mesh++) {
+        
+        //Setting diffuseColor and emissiveColor initially to black
+        aiColor3D diffuseColor = {0,0,0};
+        aiColor3D emissiveColor = {0,0,0};
+        
+        if (scene->mMaterials) {
+            // Setting up the diffuse and emissive color used by the mesh
+            scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+            scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor);
+        }
+        
+        for (unsigned int face = 0; face < scene->mMeshes[mesh]->mNumFaces; face++) {
+            
+            if (scene->mMeshes[mesh]->mFaces[face].mNumIndices != 3) {
+                std::cerr << "Object is not triangulated.\n Finishing...";
+                return false;
+            }
+            
+            
+            primitives_.push_back(Primitive::PrimitiveUniquePtr( new Triangle{
+                //material
+                new GenericMaterial(glm::vec3 {emissiveColor.r, emissiveColor.g, emissiveColor.b},
+                                    glm::vec3 {diffuseColor.r, diffuseColor.g, diffuseColor.b}),
+                
+                
+                // a
+                glm::vec3{
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].x,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].y,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].z
+                },
+                
+                // b
+                glm::vec3{
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].x,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].y,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].z
+                },
+                
+                // c
+                glm::vec3{
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].x,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].y,
+                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].z
+                },
+            } ) );
+            
+        }
+    }
+    
+    return true;
 }
 
