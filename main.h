@@ -7,7 +7,6 @@
 #include "scene.h"
 #include "buffer.h"
 #include "pathtracer.h"
-#include <Magick++.h>
 
 #endif /* MAIN_H_ */
 
