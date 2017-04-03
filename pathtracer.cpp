@@ -42,8 +42,13 @@ void PathTracer::integrate_parallel(){
     std::size_t block, initX, initY, endX, endY, blocksizeX, blocksizeY;
     double xRandom, yRandom;
     
-    blocksizeX = buffer_.h_resolution_ / 15;
-    blocksizeY = buffer_.v_resolution_ / 15;
+    if ((!(buffer_.h_resolution_ % 16)) && (!(buffer_.v_resolution_ % 16))) {
+        blocksizeX = buffer_.h_resolution_ / 16;
+        blocksizeY = buffer_.v_resolution_ / 16;
+    }else{
+        blocksizeX = buffer_.h_resolution_ / 15;
+        blocksizeY = buffer_.v_resolution_ / 15;
+    }
     
     while (true) {
         block = blockController++;
@@ -136,21 +141,28 @@ void PathTracer::printProgress(struct timespec& begin){
     
     int block = 0;
     
+    double estimated_secs = INFINITY;
+    double elapsed_secs = 0;
+    struct timespec finish;
+    
+    std::thread estSecs(&PathTracer::updateEstimatedTime, this, std::ref(elapsed_secs), std::ref(estimated_secs));
+    
     while (block < 255) {
         block = blockController;
-        struct timespec finish;
         clock_gettime(CLOCK_MONOTONIC, &finish);
-        double elapsed_secs = double(finish.tv_sec - begin.tv_sec);
+        elapsed_secs = double(finish.tv_sec - begin.tv_sec);
         
         std::stringstream progress_stream;
-        progress_stream << "\r  Progresso: "
+        progress_stream << "\r  Progress: "
         << std::fixed << std::setw( 6 )
         << std::setprecision( 2 )
         << (100.0f / 256.0f) * (float)block
         << "%"
         << " "
         << "(" << block << "/256) "
-        << "Tempo decorrido: " << ((int)(elapsed_secs/60))/60 << "h " << ((int)(elapsed_secs/60)) % 60 << "m " << ((int)round(elapsed_secs)) % 60 << "s"
+        << "Elapsed time: " << ((int)(elapsed_secs/60))/60 << "h " << ((int)(elapsed_secs/60)) % 60 << "m " << ((int)round(elapsed_secs)) % 60 << "s"
+        << " "
+        << "Estimated time left: " << ((int)((estimated_secs - elapsed_secs)/60))/60 << "h " << ((int)((estimated_secs - elapsed_secs)/60)) % 60 << "m " << ((int)round((estimated_secs - elapsed_secs))) % 60 << "s"
         << std::endl;
         
         
@@ -158,6 +170,16 @@ void PathTracer::printProgress(struct timespec& begin){
         
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    
+    estSecs.join();
+}
+
+void PathTracer::updateEstimatedTime(double& elapsed_secs, double& estimated_secs){
+    unsigned int period = numRaysperPixel_/100;
+    int block = 0;
+    while(block < 255){
+        block = blockController;
+        estimated_secs = ((256*elapsed_secs)/(block + 1));
+        std::this_thread::sleep_for(std::chrono::seconds(period));
+    }
 }
 

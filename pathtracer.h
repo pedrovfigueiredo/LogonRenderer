@@ -37,6 +37,8 @@ private:
     Ray getNewReflectedRay(IntersectionRecord& intersection_record);
     
     void printProgress(struct timespec& begin);
+    
+    void updateEstimatedTime(double& elapsed_secs, double& estimated_secs);
 
     const Camera &camera_;
 
@@ -51,6 +53,9 @@ private:
     const int maximumDepth_;
     
     std::atomic_int blockController;
+    
+    //For estimating time left
+    double lastSecs;
 
 };
 
