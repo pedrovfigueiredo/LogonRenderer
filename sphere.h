@@ -12,7 +12,7 @@ public:
 
     Sphere( void );
 
-    Sphere( glm::vec3 color, const glm::vec3 &center,
+    Sphere( Material* material, const glm::vec3 &center,
             float radius );
 
     bool intersect( const Ray &ray,

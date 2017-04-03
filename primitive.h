@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "ray.h"
+#include "material.h"
 #include "intersection_record.h"
 
 class Primitive
@@ -15,14 +16,14 @@ public:
 
     Primitive (void);
     
-    Primitive( glm::vec3 color );
+    Primitive( Material* material );
 
     virtual ~Primitive( void );
 
     virtual bool intersect( const Ray &ray,
                             IntersectionRecord &intersection_record ) const = 0;
     
-    glm::vec3 color_;
+    Material* material_;
 };
 
 #endif /* PRIMITIVE_H_ */

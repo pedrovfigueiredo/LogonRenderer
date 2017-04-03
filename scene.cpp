@@ -28,27 +28,11 @@ bool Scene::intersect( const Ray &ray,
 void Scene::load( void ) 
 {
     
-    //esferas com z = 0 // Cor Vermelha
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ -0.35f, 0.3f, 0.00f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ 0.35f, 0.3f, 0.00f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ -0.35f, -0.3f, 0.00f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 255, 0, 0 },
-        glm::vec3{ 0.35f, -0.3f, 0.00f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource{ glm::vec3{ 30, 30, 30 }},
+        glm::vec3{ -0.35f, -0.5f, 0.00f }, 0.1f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource{ glm::vec3{ 30, 30, 30 }},
+        glm::vec3{ 0.35f, -0.5f, 0.00f }, 0.1f } ) );
     
-    //esferas com z = -3 // Cor Verde
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ -0.35f, 0.3f, -1.50f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ 0.35f, 0.3f, -1.50f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ -0.35f, -0.3f, -1.50f }, 0.2f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{ 0, 255, 0 },
-        glm::vec3{ 0.35f, -0.3f, -1.50f }, 0.2f } ) );
-    
-    //primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ glm::vec3{  0.0f, 0.5f, -3.0f }, 0.2f } ) );
 }
 
 bool Scene::load( const std::string& pFile )
@@ -71,12 +55,18 @@ bool Scene::load( const std::string& pFile )
         return false;
     }
     
-    int red,green,blue;
-    
-    
-    
-    
     for (unsigned int mesh = 0 ; mesh < scene->mNumMeshes; mesh++) {
+        
+        //Setting diffuseColor and emissiveColor initially to black
+        aiColor3D diffuseColor = {0,0,0};
+        aiColor3D emissiveColor = {0,0,0};
+        
+        if (scene->mMaterials) {
+            // Setting up the diffuse and emissive color used by the mesh
+            scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+            scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor);
+        }
+        
         for (unsigned int face = 0; face < scene->mMeshes[mesh]->mNumFaces; face++) {
             
             if (scene->mMeshes[mesh]->mFaces[face].mNumIndices != 3) {
@@ -84,14 +74,12 @@ bool Scene::load( const std::string& pFile )
                 return false;
             }
             
-            red = rand() % (int)(255 + 1);
-            green = rand() % (int)(255 + 1);
-            blue = rand() % (int)(255 + 1);
-            
             
             primitives_.push_back(Primitive::PrimitiveUniquePtr( new Triangle{
-                //color
-                glm::vec3{red,green,blue},
+                //material
+                new GenericMaterial(glm::vec3 {emissiveColor.r, emissiveColor.g, emissiveColor.b},
+                                    glm::vec3 {diffuseColor.r, diffuseColor.g, diffuseColor.b}),
+                
                 
                 // a
                 glm::vec3{

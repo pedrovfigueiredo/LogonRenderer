@@ -3,8 +3,8 @@
 Primitive::Primitive(void)
 {}
 
-Primitive::Primitive( glm::vec3 color ):
-color_(color)
+Primitive::Primitive( Material* material ):
+material_(material)
 {}
 
 Primitive::~Primitive( void )

@@ -50,21 +50,42 @@ void Buffer::save( const std::string &filename ) const
                    << std::endl;
 
     // Writes color data to the output PPM file
-    for ( unsigned int y = 0; y < v_resolution_; y++ )
+    for ( unsigned int y = 0; y < v_resolution_; y++)
     {
         for ( unsigned int x = 0; x < h_resolution_; x++ )
         {
-            // convert from real to [0.0, 1.0] with clamp, then
-            //         from [0.0, 1.0] to [0.0, 255.0], then
-            //         from [0.0, 255.0] to [0.5, 255.5], then
-            //         from [0.5, 255.5] to [0, 255] with round to nearest.
-            rendering_file << buffer_data_[x][y][0] << " ";
-            rendering_file << buffer_data_[x][y][1] << " ";
-            rendering_file << buffer_data_[x][y][2] << " ";
+            rendering_file << (int)(clamp(buffer_data_[x][y][0])*255) << " ";
+            rendering_file << (int)(clamp(buffer_data_[x][y][1])*255) << " ";
+            rendering_file << (int)(clamp(buffer_data_[x][y][2])*255) << " ";
         }
     }
 
     rendering_file.close();
+    
+    //Tranforming to png file
+    Magick::Image img;
+    
+    try{
+        img.read(filename);
+    }catch(int error){
+        std::cerr << "Cannot read file from path: " << filename << "." << std::endl
+        << "Error: " << error << ". Terminating..." << std::endl;
+        exit(1);
+    }
+    
+    std::string str = filename;
+    str[filename.size() - 2] = 'n';
+    str[filename.size() - 1] = 'g';
+    
+    //Deleting original ppm file
+    //unlink(filename.c_str());
+    
+    img.write(str);
+    
+    //Not proud of this unportable line of system call. Comment if it doesn't run, as it only opens the final file (optional)
+    system((std::string("open " + str)).c_str());
+    
+    
 
     std::clog << "finished!\n";
 }

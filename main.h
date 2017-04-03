@@ -6,7 +6,8 @@
 #include "pinhole_camera.h"
 #include "scene.h"
 #include "buffer.h"
-#include "raytracer.h"
+#include "pathtracer.h"
+#include <Magick++.h>
 
 #endif /* MAIN_H_ */
 
