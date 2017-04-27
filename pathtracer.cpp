@@ -174,12 +174,11 @@ void PathTracer::printProgress(struct timespec& begin){
 }
 
 void PathTracer::updateEstimatedTime(double& elapsed_secs, double& estimated_secs){
-    unsigned int period = numRaysperPixel_/100;
     int block = 0;
     while(block < 255){
         block = blockController;
         estimated_secs = ((256*elapsed_secs)/(block + 1));
-        std::this_thread::sleep_for(std::chrono::seconds(period));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
