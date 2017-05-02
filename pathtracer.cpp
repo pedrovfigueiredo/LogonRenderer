@@ -96,44 +96,21 @@ glm::vec3 PathTracer::calculateRadiance(Ray& ray, int currDepth){
         intersection_record.t_ = std::numeric_limits< double >::max();
         
         if ( scene_.intersect( ray, intersection_record ) ){
-            /*
-            // If it's light source, there's no additional computing needed (return at next recursive call)
-            if (intersection_record.material->getEmittance() != glm::vec3 {0,0,0})
-                currDepth = maximumDepth_;
-            */
-            Ray reflectedRay = getNewReflectedRay(intersection_record);
             
-            lo = (intersection_record.material->getEmittance() +
-                 (intersection_record.material->getBRDF() *
-                 calculateRadiance(reflectedRay, currDepth + 1) *
-                 glm::dot(intersection_record.normal_, reflectedRay.direction_))/pdf);
+            Ray reflectedRay = intersection_record.material->getNewReflectedRay(ray, intersection_record.position_, intersection_record.normal_);
+            
+            if (intersection_record.material->type_ == Material::type::Mirror)
+                lo = (intersection_record.material->getEmittance() +
+                      calculateRadiance(reflectedRay, currDepth + 1));
+            else
+                lo = (intersection_record.material->getEmittance() +
+                     (intersection_record.material->getBRDF() *
+                     calculateRadiance(reflectedRay, currDepth + 1) *
+                     glm::dot(intersection_record.normal_, reflectedRay.direction_))/pdf);
         }
     }
     
     return lo;
-}
-
-Ray PathTracer::getNewReflectedRay(IntersectionRecord &intersection_record){
-    
-    Ray ray;
-    ONB onb;
-    double theta, phi, r;
-    double phiRandom = ((double)rand()/(RAND_MAX));
-    double thetaRandom = ((double)rand()/(RAND_MAX));
-    
-    theta = glm::acos(1 - thetaRandom);
-    phi = 2 * Material::PI * phiRandom;
-    r = 1;
-    
-    onb.setFromV(intersection_record.normal_);
-    
-    //order of 'y' and 'z' are inverted, given that it's used y axis as the vertical one(differing from normal pattern)
-    glm::vec3 direction = {r * glm::sin(theta) * glm::cos(phi), r * glm::cos(theta) ,r * glm::sin(theta) * glm::sin(phi)};
-    
-    // Adding direction * 10e-03 for handling errors with numeric expressions
-    ray = {intersection_record.position_ + (intersection_record.normal_*0.001f), onb.getBasisMatrix() * direction};
-    
-    return ray;
 }
 
 
@@ -141,11 +118,11 @@ void PathTracer::printProgress(struct timespec& begin){
     
     int block = 0;
     
-    double estimated_secs = INFINITY;
+    //double estimated_secs = INFINITY;
     double elapsed_secs = 0;
     struct timespec finish;
     
-    std::thread estSecs(&PathTracer::updateEstimatedTime, this, std::ref(elapsed_secs), std::ref(estimated_secs));
+    //std::thread estSecs(&PathTracer::updateEstimatedTime, this, std::ref(elapsed_secs), std::ref(estimated_secs));
     
     while (block < 255) {
         block = blockController;
@@ -160,9 +137,9 @@ void PathTracer::printProgress(struct timespec& begin){
         << "%"
         << " "
         << "(" << block << "/256) "
-        << "Elapsed time: " << ((int)(elapsed_secs/60))/60 << "h " << ((int)(elapsed_secs/60)) % 60 << "m " << ((int)round(elapsed_secs)) % 60 << "s"
+        << "Elapsed time: " << ((int)(elapsed_secs/60))/60 << "h " << ((int)(elapsed_secs/60)) % 60 << "m " << ((int)round(elapsed_secs)) % 60 << "s"/*
         << " "
-        << "Estimated time left: " << ((int)((estimated_secs - elapsed_secs)/60))/60 << "h " << ((int)((estimated_secs - elapsed_secs)/60)) % 60 << "m " << ((int)round((estimated_secs - elapsed_secs))) % 60 << "s"
+        << "Estimated time left: " << ((int)((estimated_secs - elapsed_secs)/60))/60 << "h " << ((int)((estimated_secs - elapsed_secs)/60)) % 60 << "m " << ((int)round((estimated_secs - elapsed_secs))) % 60 << "s"*/
         << std::endl;
         
         
@@ -170,7 +147,7 @@ void PathTracer::printProgress(struct timespec& begin){
         
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    estSecs.join();
+    //estSecs.join();
 }
 
 void PathTracer::updateEstimatedTime(double& elapsed_secs, double& estimated_secs){

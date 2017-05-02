@@ -27,7 +27,7 @@ int main()
     
     Buffer rendering_buffer{ x_resolution, y_resolution };
     glm::vec3 background_color{ 0.0f, 0.0f, 0.0f };
-    const int numRaysPerPixel = 1000;
+    const int numRaysPerPixel = 50;
     const int maximumDepth = 5;
     const int numThreads = 4;
     

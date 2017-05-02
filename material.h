@@ -9,12 +9,18 @@
 #ifndef material_h
 #define material_h
 
+#include "ray.h"
 #include <memory>
 #include <glm/glm.hpp>
 
 class Material
 {
 public:
+    
+    enum type {Diffuse, LightSource, GenericMaterial, Mirror};
+    
+    Material::type type_;
+    
     constexpr const static double PI = 3.141593;
     
     Material (void);
@@ -26,6 +32,9 @@ public:
     virtual glm::vec3 getBRDF() const = 0;
     
     virtual glm::vec3 getEmittance() const = 0;
+    
+    virtual Ray getNewReflectedRay(Ray& ray, glm::vec3& position ,glm::vec3& normal) = 0;
+    
     
 protected:
     glm::vec3 emittance_;

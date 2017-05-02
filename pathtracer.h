@@ -34,8 +34,6 @@ private:
     
     glm::vec3 calculateRadiance(Ray& ray, int currDepth);
     
-    Ray getNewReflectedRay(IntersectionRecord& intersection_record);
-    
     void printProgress(struct timespec& begin);
     
     void updateEstimatedTime(double& elapsed_secs, double& estimated_secs);

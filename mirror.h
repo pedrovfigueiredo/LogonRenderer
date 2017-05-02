@@ -1,13 +1,14 @@
 //
-//  light_source.h
+//  mirror.h
 //  RayTracer
 //
-//  Created by Pedro Figueirêdo on 25/03/17.
+//  Created by Pedro Figueirêdo on 28/04/17.
 //  Copyright © 2017 Lavid. All rights reserved.
 //
 
-#ifndef light_source_h
-#define light_source_h
+#ifndef mirror_h
+#define mirror_h
+
 #include "material.h"
 #include "ray.h"
 #include "intersection_record.h"
@@ -15,14 +16,15 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-class LightSource : public Material
+class Mirror : public Material
 {
 public:
-    LightSource(void);
-    LightSource(glm::vec3 emittance);
+    Mirror(void);
     
     glm::vec3 getBRDF() const;
     glm::vec3 getEmittance() const;
     Ray getNewReflectedRay(Ray& ray, glm::vec3& position ,glm::vec3& normal);
 };
-#endif /* light_source_h */
+
+
+#endif /* mirror_h */

@@ -18,6 +18,7 @@
 #include "diffuse.h"
 #include "light_source.h"
 #include "generic_material.h"
+#include "mirror.h"
 
 class Scene
 {

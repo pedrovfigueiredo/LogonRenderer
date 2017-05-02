@@ -67,6 +67,9 @@ bool Scene::load( const std::string& pFile )
             scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor);
         }
         
+        aiString name;
+        scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_NAME,name);
+        
         for (unsigned int face = 0; face < scene->mMeshes[mesh]->mNumFaces; face++) {
             
             if (scene->mMeshes[mesh]->mFaces[face].mNumIndices != 3) {
@@ -74,34 +77,60 @@ bool Scene::load( const std::string& pFile )
                 return false;
             }
             
-            
-            primitives_.push_back(Primitive::PrimitiveUniquePtr( new Triangle{
-                //material
-                new GenericMaterial(glm::vec3 {emissiveColor.r, emissiveColor.g, emissiveColor.b},
-                                    glm::vec3 {diffuseColor.r, diffuseColor.g, diffuseColor.b}),
-                
-                
-                // a
-                glm::vec3{
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].x,
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].y,
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].z
-                },
-                
-                // b
-                glm::vec3{
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].x,
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].y,
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].z
-                },
-                
-                // c
-                glm::vec3{
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].x,
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].y,
-                    scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].z
-                },
-            } ) );
+            if(std::string(name.data) == "ceiling")
+                primitives_.push_back(Primitive::PrimitiveUniquePtr( new Triangle{
+                    //material
+                    new Mirror(),
+                    
+                    // a
+                    glm::vec3{
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].x,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].y,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].z
+                    },
+                    
+                    // b
+                    glm::vec3{
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].x,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].y,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].z
+                    },
+                    
+                    // c
+                    glm::vec3{
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].x,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].y,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].z
+                    },
+                } ) );
+            else
+                primitives_.push_back(Primitive::PrimitiveUniquePtr( new Triangle{
+                    //material
+                    new GenericMaterial(glm::vec3 {emissiveColor.r, emissiveColor.g, emissiveColor.b},
+                                        glm::vec3 {diffuseColor.r, diffuseColor.g, diffuseColor.b}),
+                    
+                    
+                    // a
+                    glm::vec3{
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].x,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].y,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].z
+                    },
+                    
+                    // b
+                    glm::vec3{
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].x,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].y,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].z
+                    },
+                    
+                    // c
+                    glm::vec3{
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].x,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].y,
+                        scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].z
+                    },
+                } ) );
             
         }
     }
