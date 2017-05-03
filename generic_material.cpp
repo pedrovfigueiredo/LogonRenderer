@@ -21,23 +21,21 @@ GenericMaterial::GenericMaterial(glm::vec3 emittance, glm::vec3 brdf){
     type_ = type::GenericMaterial;
 }
 
-glm::vec3 GenericMaterial::getBRDF() const{
-    return brdf_;
+glm::vec3 GenericMaterial::getfr(glm::vec3 w_i, glm::vec3 w_o) const{
+    // pdf == 1/2pi
+    // w_o.y == dot(normal,w_o)
+    return (brdf_ * w_o.y * (float)(2 *Material::PI));
 }
 
 glm::vec3 GenericMaterial::getEmittance() const{
     return emittance_;
 }
 
-Ray GenericMaterial::getNewReflectedRay(Ray& ray, glm::vec3& position ,glm::vec3& normal){
+glm::vec3 GenericMaterial::getNewDirection(glm::vec3& w_i){
     
-    Ray reflectedRay;
-    ONB onb;
     double theta, phi, r;
     double phiRandom = ((double)rand()/(RAND_MAX));
     double thetaRandom = ((double)rand()/(RAND_MAX));
-    
-    onb.setFromV(normal);
     
     theta = glm::acos(1 - thetaRandom);
     phi = 2 * Material::PI * phiRandom;
@@ -46,8 +44,5 @@ Ray GenericMaterial::getNewReflectedRay(Ray& ray, glm::vec3& position ,glm::vec3
     //order of 'y' and 'z' are inverted, given that it's used y axis as the vertical one(differing from normal pattern)
     glm::vec3 direction = {r * glm::sin(theta) * glm::cos(phi), r * glm::cos(theta) ,r * glm::sin(theta) * glm::sin(phi)};
     
-    // Adding direction * 10e-03 for handling errors with numeric expressions
-    reflectedRay = {position + (normal*0.001f), onb.getBasisMatrix() * direction};
-    
-    return reflectedRay;
+    return direction;
 }

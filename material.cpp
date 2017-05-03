@@ -11,9 +11,10 @@
 Material::Material(void)
 {}
 
-Material::Material( glm::vec3 emittance, glm::vec3 brdf ):
+Material::Material( glm::vec3 emittance, glm::vec3 brdf, glm::vec3 btdf):
 emittance_(emittance),
-brdf_(brdf)
+brdf_(brdf),
+btdf_(btdf)
 {}
 
 Material::~Material( void )

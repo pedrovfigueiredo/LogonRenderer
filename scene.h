@@ -19,6 +19,7 @@
 #include "light_source.h"
 #include "generic_material.h"
 #include "mirror.h"
+#include "smooth_dieletric.h"
 
 class Scene
 {

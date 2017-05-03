@@ -22,8 +22,8 @@ public:
     GenericMaterial(void);
     GenericMaterial(glm::vec3 emittance, glm::vec3 brdf);
     
-    glm::vec3 getBRDF() const;
+    glm::vec3 getfr(glm::vec3 w_i, glm::vec3 w_o) const;
     glm::vec3 getEmittance() const;
-    Ray getNewReflectedRay(Ray& ray, glm::vec3& position ,glm::vec3& normal);
+    glm::vec3 getNewDirection(glm::vec3& w_i);
 };
 #endif /* generic_material_h */

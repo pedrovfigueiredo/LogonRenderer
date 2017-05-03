@@ -9,26 +9,18 @@
 #include "mirror.h"
 
 Mirror::Mirror(void):
-Material::Material{{0,0,0}, {0,0,0}}
+Material::Material{{0,0,0}, {0,0,0}, {0,0,0}}
 {type_ = type::Mirror;}
 
-glm::vec3 Mirror::getBRDF() const{
-    return brdf_;
+glm::vec3 Mirror::getfr(glm::vec3 w_i, glm::vec3 w_o) const{
+    // The perfect mirror reflects all radiance.
+    return {1,1,1};
 }
 
 glm::vec3 Mirror::getEmittance() const{
     return emittance_;
 }
 
-Ray Mirror::getNewReflectedRay(Ray& ray, glm::vec3& position ,glm::vec3& normal){
-    Ray reflectedRay;
-    ONB onb;
-    
-    onb.setFromV(normal);
-    
-    glm::vec3 localDirection = glm::transpose(onb.getBasisMatrix()) * ray.direction_;
-    localDirection = {localDirection.x, -localDirection.y, localDirection.z};
-    reflectedRay = {position + (normal*0.001f), onb.getBasisMatrix() * localDirection};
-    return reflectedRay;
-    
+glm::vec3 Mirror::getNewDirection(glm::vec3& w_i){
+    return {-w_i.x, w_i.y, -w_i.z};
 }

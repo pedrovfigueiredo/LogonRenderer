@@ -89,7 +89,6 @@ void PathTracer::integrate_parallel(){
 glm::vec3 PathTracer::calculateRadiance(Ray& ray, int currDepth){
     
     glm::vec3 lo = {0,0,0};
-    float pdf = 1.0f/(2.0f * Material::PI);
     IntersectionRecord intersection_record;
     
     if (currDepth < maximumDepth_) {
@@ -97,16 +96,24 @@ glm::vec3 PathTracer::calculateRadiance(Ray& ray, int currDepth){
         
         if ( scene_.intersect( ray, intersection_record ) ){
             
-            Ray reflectedRay = intersection_record.material->getNewReflectedRay(ray, intersection_record.position_, intersection_record.normal_);
+            ONB tangent_frame;
+            tangent_frame.setFromV( intersection_record.normal_ );
             
-            if (intersection_record.material->type_ == Material::type::Mirror)
-                lo = (intersection_record.material->getEmittance() +
-                      calculateRadiance(reflectedRay, currDepth + 1));
-            else
-                lo = (intersection_record.material->getEmittance() +
-                     (intersection_record.material->getBRDF() *
-                     calculateRadiance(reflectedRay, currDepth + 1) *
-                     glm::dot(intersection_record.normal_, reflectedRay.direction_))/pdf);
+            glm::dmat3x3 tangent_to_universe_space = tangent_frame.getBasisMatrix();
+            glm::dmat3x3 universe_to_tangent_space = glm::transpose( tangent_to_universe_space );
+            
+            glm::vec3 w_i = universe_to_tangent_space * -ray.direction_;
+            
+            glm::vec3 w_o = intersection_record.material->getNewDirection(w_i);
+            
+            glm::vec3 new_direction = tangent_to_universe_space * w_o;
+            
+            Ray reflectedRay = {intersection_record.position_ + (new_direction*0.001f), new_direction};
+            
+            lo = (intersection_record.material->getEmittance() +
+                 intersection_record.material->getfr(w_i, w_o) *
+                 calculateRadiance(reflectedRay, currDepth + 1));
+            
         }
     }
     

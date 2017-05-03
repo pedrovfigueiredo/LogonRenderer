@@ -28,11 +28,12 @@ bool Scene::intersect( const Ray &ray,
 void Scene::load( void ) 
 {
     
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource{ glm::vec3{ 30, 30, 30 }},
-        glm::vec3{ -0.35f, -0.5f, 0.00f }, 0.1f } ) );
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource{ glm::vec3{ 30, 30, 30 }},
-        glm::vec3{ 0.35f, -0.5f, 0.00f }, 0.1f } ) );
-    
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric{1.65f},
+        glm::vec3{ 0.0f, 0.6f, 0.3f }, 0.3f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{0,191,255}),
+        glm::vec3{ 0.5f, 0.3f, 0.0f }, 0.3f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{1,1,0}),
+        glm::vec3{ -0.5f, 0.3f, 0.0f }, 0.3f } ) );
 }
 
 bool Scene::load( const std::string& pFile )

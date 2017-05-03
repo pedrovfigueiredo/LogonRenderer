@@ -19,16 +19,15 @@ int main()
     Scene scene;
     
     
-    if (!scene.load("/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/CornellBox-Original.obj"))
+    if (!scene.load("/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/CornellBox-Empty-CO.obj"))
         return EXIT_FAILURE;
+    scene.load();
     
-    
-    //scene.load();
     
     Buffer rendering_buffer{ x_resolution, y_resolution };
     glm::vec3 background_color{ 0.0f, 0.0f, 0.0f };
-    const int numRaysPerPixel = 50;
-    const int maximumDepth = 5;
+    const int numRaysPerPixel = 500;
+    const int maximumDepth = 10;
     const int numThreads = 4;
     
     // Set up the renderer.
