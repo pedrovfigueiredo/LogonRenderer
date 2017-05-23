@@ -11,12 +11,14 @@
 Triangle::Triangle( void ){}
 
 Triangle::Triangle( Material* material, const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c ) :
-Primitive::Primitive{material},
-
+Primitive::Primitive{material,                                                                         // material
+                    {0,0,0},                   // center
+                    {std::min({a.x, b.x, c.x}), std::min({a.y, b.y, c.y}), std::min({a.z, b.z, c.z})}, // negativeCorner
+                    {std::max({a.x, b.x, c.x}), std::max({a.y, b.y, c.y}), std::max({a.z, b.z, c.z})}},// positiveCorner
 a_{ a },
 b_{ b },
 c_{ c }
-{}
+{center_ = (positiveCorner_ + negativeCorner_) * 0.5f;}
 
 bool Triangle::intersect( const Ray &ray, IntersectionRecord &intersection_record ) const{
     

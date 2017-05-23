@@ -16,12 +16,18 @@ public:
 
     Primitive (void);
     
-    Primitive( Material* material );
+    Primitive( Material* material, glm::vec3 center, glm::vec3 negativeCorner,glm::vec3 positiveCorner);
 
     virtual ~Primitive( void );
 
     virtual bool intersect( const Ray &ray,
                             IntersectionRecord &intersection_record ) const = 0;
+    
+    glm::vec3 center_;
+    
+    glm::vec3 negativeCorner_;
+    
+    glm::vec3 positiveCorner_;
     
     Material* material_;
 };

@@ -96,6 +96,11 @@ glm::vec3 PathTracer::calculateRadiance(Ray& ray, int currDepth){
         
         if ( scene_.intersect( ray, intersection_record ) ){
             
+            //Otimization for perfect light sources
+            if (intersection_record.material->type_ == Material::LightSource) {
+                return intersection_record.material->getEmittance();
+            }
+            
             ONB tangent_frame;
             tangent_frame.setFromV( intersection_record.normal_ );
             

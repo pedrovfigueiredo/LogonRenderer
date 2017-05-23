@@ -10,6 +10,8 @@
 #define triangle_h
 
 #include <glm/glm.hpp>
+#include <algorithm>
+#include <vector>
 #include "primitive.h"
 #include "intersection_record.h"
 #include "ray.h"

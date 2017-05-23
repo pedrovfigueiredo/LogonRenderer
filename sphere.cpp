@@ -6,9 +6,7 @@ Sphere::Sphere( void )
 Sphere::Sphere( Material* material, const glm::vec3 &center,
                 float radius ) :
 
-        Primitive::Primitive{material},
-
-        center_{ center },
+        Primitive::Primitive{material, center, center - radius, center + radius},
         radius_{ radius }
 {}
 

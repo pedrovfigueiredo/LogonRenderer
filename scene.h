@@ -20,10 +20,14 @@
 #include "generic_material.h"
 #include "mirror.h"
 #include "smooth_dieletric.h"
+#include "bvh.h"
+#include "object.h"
 
 class Scene
 {
 public:
+    
+    enum AcelerationMethod{ NONE, BVH};
 
     Scene( void );
 
@@ -31,12 +35,25 @@ public:
 
     bool intersect( const Ray &ray,
                     IntersectionRecord &intersection_record ) const;
-
-    void load( void );
     
-    bool load( const std::string& pFile );
+    void load(const AcelerationMethod* method, const BVH::SplitMethod* splitMethod);
+    
+    bool load( std::vector<Object*> &objects, const AcelerationMethod* method, const BVH::SplitMethod* splitMethod);
+    
+    double getBuildingTreeTime();
+    
+    
+    AcelerationMethod method_ = BVH;
+    
+private:
+    
+    void setMethod(const BVH::SplitMethod* splitMethod);
+    
+    class BVH* bvh;
 
     std::vector< Primitive::PrimitiveUniquePtr > primitives_;
+    
+    double buildingTreeTime = 0;
 
 };
 

@@ -7,6 +7,7 @@
 #include "scene.h"
 #include "buffer.h"
 #include "pathtracer.h"
+#include "object.h"
 
 #endif /* MAIN_H_ */
 
