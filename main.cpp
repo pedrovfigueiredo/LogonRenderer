@@ -4,7 +4,7 @@ int main()
 {
     unsigned int x_resolution = 512;
     unsigned int y_resolution = 512;
-    
+    /*
     PinHoleCamera camera{ -1.0f,
         1.0f,
         -1.0f,
@@ -14,21 +14,32 @@ int main()
         glm::vec3{ 0.0f, 0.12f,  0.15f },     // position
         //glm::vec3{ 0.0f, 1,  2 },     // position
         glm::vec3{ 0.0f, 1.0f,  0.0f },     // up
-        glm::vec3{ 0.0f, 0.0f,  -1.0f } };   // look at
+        glm::vec3{ 0.0f, 0.00f,  -1.0f } };   // look at
+    */
     
+    PinHoleCamera camera{ -1.25f,
+        1.25f,
+        -1.25f,
+        1.25f,
+        2.00f,
+        glm::ivec2{ x_resolution, y_resolution },
+        glm::vec3{ 0.0f, 1.0f,  2.50f },     // position
+        glm::vec3{ 0.0f, 10.0f,  0.0f },     // up
+        glm::vec3{ 0.0f, 1.0f,  -1.0f } };   // look at
     
     Scene scene;
     
     std::vector<Object*> objects;
-    objects.push_back(new Object("Happy_Budda_Copper","/Users/PedroFigueiredo/Downloads/OBJs_baixados/happy_recon/happy_vrip.ply", new Diffuse(glm::vec3{203, 109, 81}), glm::vec3{0.09,-0.05,-0.075}));
-    objects.push_back(new Object("Happy_Budda_Silver","/Users/PedroFigueiredo/Downloads/OBJs_baixados/happy_recon/happy_vrip.ply", new Diffuse(glm::vec3{192,192,192}), glm::vec3{-0.09,-0.05,-0.075}));
-    objects.push_back(new Object("Happy_Budda_Gold","/Users/PedroFigueiredo/Downloads/OBJs_baixados/happy_recon/happy_vrip.ply", new Diffuse(glm::vec3{255, 215, 0}), glm::vec3{0.0,-0.05,0}));
-    //objects.push_back(new Object("Monkey", "/Users/PedroFigueiredo/Downloads/OBJs_baixados/monkey90.obj", new Diffuse(glm::vec3{255,0,0})));
-    objects.push_back(new Object("Floor","/Users/PedroFigueiredo/Downloads/OBJs_baixados/floor3.obj", new Mirror()));
-    objects.push_back(new Object("Plane","/Users/PedroFigueiredo/Downloads/OBJs_baixados/light.obj", new LightSource(glm::vec3{70,70,70})));
     
-    //scene.load(Scene::AcelerationMethod::BVH);
-    if (!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::BVH), new BVH::SplitMethod(BVH::SplitMethod::CenterSorting)))
+    //objects.push_back(new Object("Happy_Budda_Copper","/Users/PedroFigueiredo/Downloads/OBJs_baixados/happy_recon/happy_vrip.ply", new RoughConductor(0.5, glm::vec3{0.95, 0.64, 0.54}), glm::vec3{0.0,-0.05,0}));
+    //objects.push_back(new Object("Monkey", "/Users/PedroFigueiredo/Downloads/OBJs_baixados/monkey90.obj", new SmoothConductor()));
+    //objects.push_back(new Object("Floor","/Users/PedroFigueiredo/Downloads/OBJs_baixados/floor3.obj", new Diffuse(glm::vec3{101, 23, 34})));
+    //objects.push_back(new Object("Light","/Users/PedroFigueiredo/Downloads/OBJs_baixados/light.obj", new LightSource(glm::vec3{70,70,70})));
+    //objects.push_back(new Object("Golden_Dragon","/Users/PedroFigueiredo/Downloads/OBJs_baixados/dragon_recon/dragon_vrip.ply", new RoughConductor(0.5, glm::vec3{1.00, 0.71, 0.29})));
+    objects.push_back(new Object("CornellBox_Empty","/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/CornellBox-Empty-CO.obj"));
+    
+    scene.load(new Scene::AcelerationMethod(Scene::AcelerationMethod::BVH), new BVH::SplitMethod(BVH::SplitMethod::SAH));
+    if (!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::BVH), new BVH::SplitMethod(BVH::SplitMethod::SAH)))
         return EXIT_FAILURE;
     
     

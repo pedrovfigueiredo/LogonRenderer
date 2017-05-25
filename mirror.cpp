@@ -9,10 +9,10 @@
 #include "mirror.h"
 
 Mirror::Mirror(void):
-Material::Material{{0,0,0}, {0,0,0}, {0,0,0}}
+Material::Material{{0,0,0}, {0,0,0}}
 {type_ = type::Mirror;}
 
-glm::vec3 Mirror::getfr(glm::vec3 w_i, glm::vec3 w_o) const{
+glm::vec3 Mirror::getfr(glm::vec3& w_i, glm::vec3& w_o) const{
     // The perfect mirror reflects all radiance.
     return {1,1,1};
 }

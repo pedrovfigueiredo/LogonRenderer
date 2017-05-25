@@ -17,7 +17,7 @@ class Material
 {
 public:
     
-    enum type {Diffuse, LightSource, GenericMaterial, Mirror, SmoothDieletric};
+    enum type {Diffuse, LightSource, GenericMaterial, Mirror, SmoothDieletric, RoughConductor};
     
     Material::type type_;
     
@@ -25,11 +25,11 @@ public:
     
     Material (void);
     
-    Material( glm::vec3 emittance, glm::vec3 brdf, glm::vec3 btdf );
+    Material( glm::vec3 emittance, glm::vec3 brdf);
     
     virtual ~Material( void );
     
-    virtual glm::vec3 getfr(glm::vec3 w_i, glm::vec3 w_o) const = 0;
+    virtual glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o) const = 0;
     
     virtual glm::vec3 getEmittance() const = 0;
     
@@ -39,7 +39,6 @@ public:
 protected:
     glm::vec3 emittance_;
     glm::vec3 brdf_;
-    glm::vec3 btdf_;
     
 };
 

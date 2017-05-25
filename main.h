@@ -8,6 +8,7 @@
 #include "buffer.h"
 #include "pathtracer.h"
 #include "object.h"
+#include "rough_conductor.h"
 
 #endif /* MAIN_H_ */
 

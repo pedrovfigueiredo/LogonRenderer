@@ -21,7 +21,7 @@ public:
     Diffuse(void);
     Diffuse(glm::vec3 color);
     
-    glm::vec3 getfr(glm::vec3 w_i, glm::vec3 w_o) const;
+    glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o) const;
     glm::vec3 getEmittance() const;
     glm::vec3 getNewDirection(glm::vec3& w_i);
 };

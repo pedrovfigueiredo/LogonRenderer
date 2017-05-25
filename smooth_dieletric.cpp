@@ -9,22 +9,19 @@
 #include "smooth_dieletric.h"
 
 SmoothDieletric::SmoothDieletric(void):
-IOR_(1.5){};
+Material::Material{{0,0,0}, {0,0,0}},
+IOR_(1.5){type_ = type::SmoothDieletric;};
 
 SmoothDieletric::SmoothDieletric( float IOR):
-IOR_(IOR){
-    type_ = type::SmoothDieletric;
-    emittance_ = {0,0,0};
-    brdf_ = {0,0,0};
-    btdf_ = {0,0,0};
-}
+Material::Material{{0,0,0}, {0,0,0}},
+IOR_(IOR){type_ = type::SmoothDieletric;}
 
 glm::vec3 SmoothDieletric::getEmittance() const{
     return emittance_;
 }
 
 glm::vec3 SmoothDieletric::getNewDirection(glm::vec3& w_i){
-    float ni,no;
+    double ni,no;
     glm::vec3 invertedDirection = -w_i;
     double fresnel;
     glm::vec3 normal = {0,1,0};
@@ -49,11 +46,11 @@ glm::vec3 SmoothDieletric::getNewDirection(glm::vec3& w_i){
     
 }
 
-glm::vec3 SmoothDieletric::getfr(glm::vec3 w_i, glm::vec3 w_o) const{
+glm::vec3 SmoothDieletric::getfr(glm::vec3& w_i, glm::vec3& w_o) const{
     return glm::vec3{1,1,1};
 }
 
-double SmoothDieletric::rShclick2( const glm::vec3 w_i, const glm::vec3 normal , double n1, double n2){
+double SmoothDieletric::rShclick2( const glm::vec3& w_i, const glm::vec3& normal , double& n1, double& n2){
     double r0 = (n1 - n2) /(n1 + n2);
     r0 *= r0;
     double cosX = -glm::dot(normal, w_i);

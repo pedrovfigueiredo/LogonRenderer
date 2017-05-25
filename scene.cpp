@@ -54,14 +54,14 @@ void Scene::setMethod(const BVH::SplitMethod* splitMethod){
 }
 void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitMethod)
 {
-    /*
-     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric{1.5f},
-     glm::vec3{ 0.0f, 0.6f, 0.3f }, 0.3f } ) );
+    
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new RoughConductor(0.8, glm::vec3{1.00, 0.71, 0.29}),
+     glm::vec3{ 0.0f, 0.6f, 0.0f }, 0.3f } ) );
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{0,191,255}),
-     glm::vec3{ 0.5f, 0.3f, 0.0f }, 0.3f } ) );
+     glm::vec3{ 0.5f, 0.3f, 0.3f }, 0.3f } ) );
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{1,1,0}),
-     glm::vec3{ -0.5f, 0.3f, 0.0f }, 0.3f } ) );
-     */
+     glm::vec3{ -0.5f, 0.3f, 0.3f }, 0.3f } ) );
+    
     /*
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(),
      glm::vec3{ -0.3f, 0.31f, -0.3f}, 0.3f} ) );

@@ -14,13 +14,13 @@ Diffuse::Diffuse(void)
 Diffuse::Diffuse( glm::vec3 color){
     type_ = type::Diffuse;
     emittance_ = {0,0,0};
-    if (color.x > 1 || color.y > 1 || color.z > 1){
+    if (color.x > 1 || color.y > 1 || color.z > 1)
         brdf_ = {(color.x/255) / PI, (color.y/255) / PI, (color.z/255) / PI};
-    }else
+    else
         brdf_ = {color.x / PI, color.y / PI, color.z / PI};
 }
 
-glm::vec3 Diffuse::getfr(glm::vec3 w_i, glm::vec3 w_o) const{
+glm::vec3 Diffuse::getfr(glm::vec3& w_i, glm::vec3& w_o) const{
     // pdf == 1/2pi
     // w_o.y == dot(normal,w_o)
     return (brdf_ * w_o.y * (float)(2 *Material::PI));

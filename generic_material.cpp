@@ -12,16 +12,15 @@ GenericMaterial::GenericMaterial(void)
 {}
 
 GenericMaterial::GenericMaterial(glm::vec3 emittance, glm::vec3 brdf){
-    if (brdf.x > 1 || brdf.y > 1 || brdf.z > 1){
+    if (brdf.x > 1 || brdf.y > 1 || brdf.z > 1)
         brdf_ = {(brdf.x/255) / PI, (brdf.y/255) / PI, (brdf.z/255) / PI};
-    }
     else
         brdf_ = {brdf.x / PI, brdf.y / PI, brdf.z / PI};
     emittance_ = emittance;
     type_ = type::GenericMaterial;
 }
 
-glm::vec3 GenericMaterial::getfr(glm::vec3 w_i, glm::vec3 w_o) const{
+glm::vec3 GenericMaterial::getfr(glm::vec3& w_i, glm::vec3& w_o) const{
     // pdf == 1/2pi
     // w_o.y == dot(normal,w_o)
     return (brdf_ * w_o.y * (float)(2 *Material::PI));

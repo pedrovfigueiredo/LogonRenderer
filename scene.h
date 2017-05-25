@@ -20,6 +20,7 @@
 #include "generic_material.h"
 #include "mirror.h"
 #include "smooth_dieletric.h"
+#include "rough_conductor.h"
 #include "bvh.h"
 #include "object.h"
 
