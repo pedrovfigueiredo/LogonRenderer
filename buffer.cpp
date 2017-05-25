@@ -54,9 +54,9 @@ void Buffer::save( const std::string &filename ) const
     {
         for ( unsigned int x = 0; x < h_resolution_; x++ )
         {
-            rendering_file << (int)(clamp(buffer_data_[x][y][0])*255 + 0.5f) << " ";
-            rendering_file << (int)(clamp(buffer_data_[x][y][1])*255 + 0.5f) << " ";
-            rendering_file << (int)(clamp(buffer_data_[x][y][2])*255 + 0.5f) << " ";
+            rendering_file << (int)(pow(clamp(buffer_data_[x][y][0]), 1.0f/2.2f)*255 + 0.5f) << " ";
+            rendering_file << (int)(pow(clamp(buffer_data_[x][y][1]), 1.0f/2.2f)*255 + 0.5f) << " ";
+            rendering_file << (int)(pow(clamp(buffer_data_[x][y][2]), 1.0f/2.2f)*255 + 0.5f) << " ";
         }
     }
 
