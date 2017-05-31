@@ -44,7 +44,7 @@ void Scene::setMethod(const BVH::SplitMethod* splitMethod){
     switch (method_) {
         case BVH:
             bvh = new class BVH(primitives_);
-            buildingTreeTime = bvh->constructTree(*splitMethod);
+            bvh->constructTree(*splitMethod);
             break;
         case NONE: // Set bvh pointer to nullptr
         default:
@@ -54,14 +54,14 @@ void Scene::setMethod(const BVH::SplitMethod* splitMethod){
 }
 void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitMethod)
 {
-    
+    /*
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new RoughConductor(0.8, glm::vec3{1.00, 0.71, 0.29}),
      glm::vec3{ 0.0f, 0.6f, 0.0f }, 0.3f } ) );
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{0,191,255}),
      glm::vec3{ 0.5f, 0.3f, 0.3f }, 0.3f } ) );
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{1,1,0}),
      glm::vec3{ -0.5f, 0.3f, 0.3f }, 0.3f } ) );
-    
+    */
     /*
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(),
      glm::vec3{ -0.3f, 0.31f, -0.3f}, 0.3f} ) );
@@ -69,6 +69,10 @@ void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitM
      glm::vec3{ 0.5f, 0.31f, 0.1f}, 0.3f} ) );
      
      */
+    
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource({10,10,10}),
+        glm::vec3{ 0.5f, 100, 0.3f }, 50.0f } ) );
+     
     if (method_){
         this->method_ = *method;
         if (splitMethod)
@@ -111,9 +115,15 @@ bool Scene::load( std::vector<Object*> &objects, const AcelerationMethod* method
                     scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
                     scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor);
                 }
+                /*
+                aiString name;
+                scene->mMaterials[scene->mMeshes[mesh]->mMaterialIndex]->Get(AI_MATKEY_NAME,name);
                 
-                object->material_ = new GenericMaterial(glm::vec3 {emissiveColor.r, emissiveColor.g, emissiveColor.b},
-                                                        glm::vec3 {diffuseColor.r, diffuseColor.g, diffuseColor.b});
+                if (std::string(name.data) == "backWall") {
+                    object->material_ = new Mirror();
+                }else*/
+                    object->material_ = new GenericMaterial(glm::vec3 {emissiveColor.r, emissiveColor.g, emissiveColor.b},
+                                                            glm::vec3 {diffuseColor.r, diffuseColor.g, diffuseColor.b});
             }
             
             
@@ -131,25 +141,25 @@ bool Scene::load( std::vector<Object*> &objects, const AcelerationMethod* method
                     object->material_,
                     
                     // a
-                    glm::vec3{
+                    object->transformations_->ApplyTransformations(glm::vec3{
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].x,
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].y,
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[0]].z
-                    } + object->translation_vector_,
+                    }),
                     
                     // b
-                    glm::vec3{
+                    object->transformations_->ApplyTransformations(glm::vec3{
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].x,
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].y,
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[1]].z
-                    } + object->translation_vector_,
+                    }) ,
                     
                     // c
-                    glm::vec3{
+                    object->transformations_->ApplyTransformations(glm::vec3{
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].x,
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].y,
                         scene->mMeshes[mesh]->mVertices[scene->mMeshes[mesh]->mFaces[face].mIndices[2]].z
-                    } + object->translation_vector_,
+                    }) ,
                 } ) );
                 
             }
@@ -165,9 +175,7 @@ bool Scene::load( std::vector<Object*> &objects, const AcelerationMethod* method
     }else
         setMethod(nullptr);
     
+    std::cout << "Número de primitivas: " << primitives_.size() << std::endl;
+    
     return true;
-}
-
-double Scene::getBuildingTreeTime(){
-    return buildingTreeTime;
 }

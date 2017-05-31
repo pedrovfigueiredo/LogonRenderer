@@ -9,6 +9,7 @@
 #include "pathtracer.h"
 #include "object.h"
 #include "rough_conductor.h"
+#include "transformations.h"
 
 #endif /* MAIN_H_ */
 

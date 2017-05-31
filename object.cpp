@@ -8,33 +8,27 @@
 
 #include "object.h"
 
-Object::Object(std::string name,std::string fileName, Material* material):
-name_(std::move(name)),
+Object::Object(std::string name,std::string fileName, Material* material, Transformations* transformations):
 fileName_(std::move(fileName)),
 material_(material),
-translation_vector_({0,0,0}),
-getMaterialFromMTL(false){}
+getMaterialFromMTL(false){
+    if (!transformations)
+        transformations_ = new Transformations();
+    else
+        transformations_ = transformations;
+}
 
-Object::Object(std::string name,std::string fileName, Material* material, glm::vec3 translation_vector):
-name_(std::move(name)),
-fileName_(std::move(fileName)),
-material_(material),
-translation_vector_(translation_vector),
-getMaterialFromMTL(false){}
-
-Object::Object(std::string name,std::string fileName):
+Object::Object(std::string name,std::string fileName, Transformations* transformations):
 name_(std::move(name)),
 fileName_(std::move(fileName)),
 material_(nullptr),
-translation_vector_({0,0,0}),
-getMaterialFromMTL(true){}
+getMaterialFromMTL(true){
+    if (!transformations)
+        transformations_ = new Transformations();
+    else
+        transformations_ = transformations;
+}
 
-Object::Object(std::string name,std::string fileName, glm::vec3 translation_vector):
-name_(std::move(name)),
-fileName_(std::move(fileName)),
-material_(nullptr),
-translation_vector_(translation_vector),
-getMaterialFromMTL(true){}
 
 const std::string& Object::getFileName(){
     return fileName_;

@@ -41,8 +41,6 @@ public:
     
     bool load( std::vector<Object*> &objects, const AcelerationMethod* method, const BVH::SplitMethod* splitMethod);
     
-    double getBuildingTreeTime();
-    
     
     AcelerationMethod method_ = BVH;
     
@@ -53,8 +51,6 @@ private:
     class BVH* bvh;
 
     std::vector< Primitive::PrimitiveUniquePtr > primitives_;
-    
-    double buildingTreeTime = 0;
 
 };
 

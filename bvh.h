@@ -13,6 +13,11 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <thread>
+#include <chrono>
 #include "primitive.h"
 #include "ray.h"
 #include "intersection_record.h"
@@ -31,7 +36,7 @@ public:
     
     BVH(const std::vector< Primitive::PrimitiveUniquePtr > &primitives);
     
-    double constructTree(const SplitMethod& splitMethod);
+    void constructTree(const SplitMethod& splitMethod);
     
     bool intersect( const Ray &ray,
                    IntersectionRecord &intersection_record ) const;
@@ -42,10 +47,12 @@ private:
     glm::vec3 min_components(const glm::vec3 &vecA, const glm::vec3 &vecB);
     glm::vec3 max_components(const glm::vec3 &vecA, const glm::vec3 &vecB);
     bool traverse(Bbox* node, const Ray &ray, IntersectionRecord &intersection_record) const;
+    void printProgress(struct timespec& begin);
     
     const std::vector< Primitive::PrimitiveUniquePtr > &primitives_;
     std::vector<int> primitives_id_;
     Bbox* root;
+    std::size_t primitivesInserted;
 };
 
 

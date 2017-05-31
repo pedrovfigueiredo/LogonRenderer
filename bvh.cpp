@@ -12,22 +12,27 @@
 
 
 BVH::BVH(const std::vector< Primitive::PrimitiveUniquePtr > &primitives):
-primitives_(primitives){
+primitives_(primitives),
+primitivesInserted(0){
     if (primitives_.empty()){
         root = nullptr;
         return;
     }
 }
 
-double BVH::constructTree(const SplitMethod& splitMethod){
+void BVH::constructTree(const SplitMethod& splitMethod){
     for (int i = 0; i < primitives_.size(); i++)
         primitives_id_.push_back(i);
     
     root = new Bbox();
     
+    primitivesInserted = 0;
+    
     struct timespec treeBuildingTimeStart, treeBuildingTimeFinish;
     
     clock_gettime(CLOCK_MONOTONIC, &treeBuildingTimeStart);
+    std::thread progressTracker(&BVH::printProgress, this, std::ref(treeBuildingTimeStart));
+    
     switch (splitMethod) {
         case CenterSorting:
             recursiveConstruct(root, 0, (int)primitives_id_.size() - 1);
@@ -39,9 +44,13 @@ double BVH::constructTree(const SplitMethod& splitMethod){
     }
     clock_gettime(CLOCK_MONOTONIC, &treeBuildingTimeFinish);
     
-    primitives_id_.clear();
+    progressTracker.join();
     
-    return treeBuildingTimeFinish.tv_sec - treeBuildingTimeStart.tv_sec;
+    float duration = treeBuildingTimeFinish.tv_sec - treeBuildingTimeStart.tv_sec;
+    
+    std::clog << "\r  BVH construction time: " << ((int)(duration/60)) % 60 << "m " << ((int)round(duration)) % 60 << "s" << std::endl;
+    
+    primitives_id_.clear();
 }
 
 void BVH::recursiveConstruct(Bbox* node, int min, int max){
@@ -49,11 +58,13 @@ void BVH::recursiveConstruct(Bbox* node, int min, int max){
     // Returns when there are 2 primitives or less on the node
     if ((max - min) < 2) {
         if (max == min) {
+            primitivesInserted++;
             node->primitives_id_ = {primitives_id_[min]};
             node->positiveCorner = primitives_[primitives_id_[min]]->positiveCorner_;
             node->negativeCorner = primitives_[primitives_id_[min]]->negativeCorner_;
             node->center = primitives_[primitives_id_[min]]->center_;
         }else{
+            primitivesInserted += 2;
             node->primitives_id_ = {primitives_id_[min], primitives_id_[max]};
             node->positiveCorner = glm::vec3{std::max(primitives_[primitives_id_[min]]->positiveCorner_.x,primitives_[primitives_id_[max]]->positiveCorner_.x),
                                              std::max(primitives_[primitives_id_[min]]->positiveCorner_.y,primitives_[primitives_id_[max]]->positiveCorner_.y),
@@ -63,6 +74,7 @@ void BVH::recursiveConstruct(Bbox* node, int min, int max){
                                              std::min(primitives_[primitives_id_[min]]->negativeCorner_.z,primitives_[primitives_id_[max]]->negativeCorner_.z)};
             node->center = (node->positiveCorner + node->negativeCorner) * 0.5f;
         }
+        
         node->leftChild = nullptr;
         node->rightChild = nullptr;
         return;
@@ -211,6 +223,7 @@ void BVH::SAH_recursiveConstruct(Bbox *node, const std::vector< int > &primitive
         node->primitives_id_ = primitives_index;
         node->leftChild = nullptr;
         node->rightChild = nullptr;
+        primitivesInserted += primitives_index.size();
         return;
     }
     
@@ -293,4 +306,29 @@ bool BVH::traverse(Bbox* node, const Ray &ray, IntersectionRecord &intersection_
     }
     
     return intersection_result;
+}
+
+void BVH::printProgress(struct timespec& begin){
+    
+    double elapsed_secs = 0;
+    struct timespec finish;
+    std::size_t primSize = primitives_.size();
+    
+    while (primitivesInserted < primSize) {
+        clock_gettime(CLOCK_MONOTONIC, &finish);
+        elapsed_secs = double(finish.tv_sec - begin.tv_sec);
+        
+        std::stringstream progress_stream;
+        progress_stream << "\r  BVH Progress: "
+        << std::fixed << std::setw( 6 )
+        << std::setprecision( 2 )
+        << 100.0 *  primitivesInserted / primitives_.size()
+        << "%"
+        << " "
+        << "Elapsed time: " << ((int)(elapsed_secs/60))/60 << "h " << ((int)(elapsed_secs/60)) % 60 << "m " << ((int)round(elapsed_secs)) % 60 << "s"
+        << std::endl;
+        std::clog << progress_stream.str();
+        
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }

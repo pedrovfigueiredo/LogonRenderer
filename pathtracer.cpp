@@ -16,6 +16,7 @@ PathTracer::PathTracer( Camera &camera,
 
 void PathTracer::integrate( std::size_t numThreads )
 {
+    blockController = 0;
 
     // Image space origin (i.e. x = 0 and y = 0) at the top left corner.
     

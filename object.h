@@ -13,28 +13,24 @@
 #include <vector>
 #include <string>
 #include "material.h"
+#include "transformations.h"
 
 class Object
 {
 public:
-    
     // Initializing with specified material
     
-    Object( std::string name , std::string fileName, Material* material);
-    
-    Object( std::string name , std::string fileName, Material* material, glm::vec3 translation_vector);
+    Object( std::string name , std::string fileName, Material* material, Transformations* tranformations);
     
     // Initializing with MTL's material
     
-    Object( std::string name , std::string fileName);
-    
-    Object( std::string name , std::string fileName, glm::vec3 translation_vector);
+    Object( std::string name , std::string fileName, Transformations* tranformations);
     
     const std::string& getFileName();
     
     Material* material_;
     
-    glm::vec3 translation_vector_;
+    Transformations* transformations_;
     
     bool getMaterialFromMTL;
     

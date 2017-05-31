@@ -55,7 +55,7 @@ glm::vec3 RoughConductor::getfr(glm::vec3& w_i, glm::vec3& w_o) const {
     double G = min({1, g1 * nwo, g1 * nwi});
     
     // Fresnel term (Schlick's)
-    glm::dvec3 r0 = this->brdf_ * this->brdf_;
+    glm::dvec3 r0 = this->brdf_;
     const double x = 1.0 - hwi;
     glm::dvec3 F = r0 + ( 1.0 - r0 ) * x * x * x * x * x;
     
