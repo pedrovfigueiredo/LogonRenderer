@@ -76,7 +76,7 @@ void PathTracer::integrate_parallel(){
                     
                     Ray ray{ camera_.getWorldSpaceRay( glm::vec2{ x + xRandom, y + yRandom } ) };
                     
-                    buffer_.buffer_data_[x][y] += calculateRadiance(ray, 0) ;
+                    buffer_.buffer_data_[x][y] += calculateRadiance(ray, 0, 0) ;
                 }
                 
                 buffer_.buffer_data_[x][y] /= numRaysperPixel_;
@@ -87,7 +87,7 @@ void PathTracer::integrate_parallel(){
     
 }
 
-glm::vec3 PathTracer::calculateRadiance(Ray& ray, int currDepth){
+glm::vec3 PathTracer::calculateRadiance(Ray& ray, int currDepth, float distanceInObject){
     
     glm::vec3 lo = {0,0,0};
     IntersectionRecord intersection_record;
@@ -117,8 +117,8 @@ glm::vec3 PathTracer::calculateRadiance(Ray& ray, int currDepth){
             Ray reflectedRay = {intersection_record.position_ + (new_direction*0.001f), new_direction};
             
             lo = (intersection_record.material->getEmittance() +
-                 intersection_record.material->getfr(w_i, w_o) *
-                 calculateRadiance(reflectedRay, currDepth + 1));
+                  intersection_record.material->getfr(w_i, w_o, glm::distance(intersection_record.position_, ray.origin_), distanceInObject) *
+                 calculateRadiance(reflectedRay, currDepth + 1, distanceInObject));
             
         }
     }

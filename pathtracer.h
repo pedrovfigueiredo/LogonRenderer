@@ -32,7 +32,7 @@ private:
     
     void integrate_parallel();
     
-    glm::vec3 calculateRadiance(Ray& ray, int currDepth);
+    glm::vec3 calculateRadiance(Ray& ray, int currDepth, float distanceInObject);
     
     void printProgress(struct timespec& begin);
     

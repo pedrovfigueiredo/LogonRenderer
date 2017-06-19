@@ -62,6 +62,7 @@ void Buffer::save( const std::string &filename ) const
 
     rendering_file.close();
     
+    
     //Tranforming to png file
     Magick::Image img;
     

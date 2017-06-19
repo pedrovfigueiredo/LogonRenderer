@@ -6,8 +6,8 @@
 #include <fstream>
 #include <vector>
 #include <glm/glm.hpp>
-#include <Magick++.h>
 #include <unistd.h>
+#include <Magick++.h>
 
 class Buffer
 {

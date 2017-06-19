@@ -15,7 +15,7 @@ LightSource::LightSource( glm::vec3 emittance):
 Material::Material{emittance, {0,0,0}}
 {type_ = type::LightSource;}
 
-glm::vec3 LightSource::getfr(glm::vec3& w_i, glm::vec3& w_o) const{
+glm::vec3 LightSource::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const{
     // pdf == 1/2pi
     // w_o.y == dot(normal,w_o)
     return (brdf_ * w_o.y * (float)(2 *Material::PI));

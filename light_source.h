@@ -21,7 +21,7 @@ public:
     LightSource(void);
     LightSource(glm::vec3 emittance);
     
-    glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o) const;
+    glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const;
     glm::vec3 getEmittance() const;
     glm::vec3 getNewDirection(glm::vec3& w_i);
 };

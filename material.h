@@ -29,7 +29,7 @@ public:
     
     virtual ~Material( void );
     
-    virtual glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o) const = 0;
+    virtual glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const = 0;
     
     virtual glm::vec3 getEmittance() const = 0;
     

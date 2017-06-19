@@ -46,11 +46,34 @@ glm::vec3 SmoothDieletric::getNewDirection(glm::vec3& w_i){
     
 }
 
-glm::vec3 SmoothDieletric::getfr(glm::vec3& w_i, glm::vec3& w_o) const{
+glm::vec3 SmoothDieletric::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const{
+    glm::vec3 invertedDirection = -w_i;
+    glm::vec3 normal = {0,1,0};
+    glm::vec3 color = {0.98,0.06,0.753};
+    
+    if (glm::dot(w_i, normal) <= 0) { // raio está saindo do objeto
+        
+        double ni = this->IOR_;
+        double no = 1.0f;
+        normal = {0, -1, 0};
+        distanceInObject += pathLength;
+        
+        double fresnel = rShclick2(invertedDirection,normal, ni, no);
+        
+        double random = (double)rand()/(RAND_MAX + 1.0f);
+        
+        if (random >= fresnel){ // incoming ray is refracted
+            glm::vec3 refracted_color = glm::exp((-color) * distanceInObject);
+            distanceInObject = 0;
+            return refracted_color;
+        }
+            
+    }
+    
     return glm::vec3{1,1,1};
 }
 
-double SmoothDieletric::rShclick2( const glm::vec3& w_i, const glm::vec3& normal , double& n1, double& n2){
+double SmoothDieletric::rShclick2( const glm::vec3& w_i, const glm::vec3& normal , double& n1, double& n2) const{
     double r0 = (n1 - n2) /(n1 + n2);
     r0 *= r0;
     double cosX = -glm::dot(normal, w_i);
@@ -64,7 +87,7 @@ double SmoothDieletric::rShclick2( const glm::vec3& w_i, const glm::vec3& normal
     return r0 + ( 1.0 - r0 ) * x * x * x * x * x;
 }
 
-glm::vec3 SmoothDieletric::refract(const glm::vec3& w_i, const glm::vec3 normal, const float n1, const float n2){
+glm::vec3 SmoothDieletric::refract(const glm::vec3& w_i, const glm::vec3 normal, const float n1, const float n2) const {
     const float n = n1/n2;
     const float cosI = -glm::dot(normal, w_i);
     const double sinT2 = n * n * (1.0 - cosI * cosI);

@@ -21,16 +21,15 @@ public:
     SmoothDieletric();
     SmoothDieletric(float IOR);
     
-    glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o) const;
+    glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const;
     glm::vec3 getEmittance() const;
     glm::vec3 getNewDirection(glm::vec3& w_i);
     
-    double rShclick2(const glm::vec3& w_i, const glm::vec3& normal , double& n1, double& n2);
-    glm::vec3 refract(const glm::vec3& w_i,const glm::vec3 normal, const float n1, const float n2);
+    double rShclick2(const glm::vec3& w_i, const glm::vec3& normal , double& n1, double& n2) const;
+    glm::vec3 refract(const glm::vec3& w_i,const glm::vec3 normal, const float n1, const float n2) const;
     
 private:
     const float IOR_;
-    
 };
 
 
