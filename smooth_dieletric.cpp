@@ -10,11 +10,13 @@
 
 SmoothDieletric::SmoothDieletric(void):
 Material::Material{{0,0,0}, {0,0,0}},
-IOR_(1.5){type_ = type::SmoothDieletric;};
+IOR_(1.5),
+absorbance_({0,0,0}){type_ = type::SmoothDieletric;};
 
-SmoothDieletric::SmoothDieletric( float IOR):
-Material::Material{{0,0,0}, {0,0,0}},
-IOR_(IOR){type_ = type::SmoothDieletric;}
+SmoothDieletric::SmoothDieletric( float IOR, glm::vec3 absorbance):
+Material::Material({0,0,0}, {0,0,0}),
+IOR_(IOR),
+absorbance_(absorbance){type_ = type::SmoothDieletric;}
 
 glm::vec3 SmoothDieletric::getEmittance() const{
     return emittance_;
@@ -47,30 +49,32 @@ glm::vec3 SmoothDieletric::getNewDirection(glm::vec3& w_i){
 }
 
 glm::vec3 SmoothDieletric::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const{
+    double ni,no;
     glm::vec3 invertedDirection = -w_i;
     glm::vec3 normal = {0,1,0};
-    glm::vec3 color = {0.98,0.06,0.753};
     
-    if (glm::dot(w_i, normal) <= 0) { // raio está saindo do objeto
-        
-        double ni = this->IOR_;
-        double no = 1.0f;
+    if (glm::dot(w_i, normal) > 0) { // raio vem de fora do objeto
+        ni = 1.0f;
+        no = this->IOR_;
+    }else{ // raio está saindo do objeto
+        ni = this->IOR_;
+        no = 1.0f;
         normal = {0, -1, 0};
         distanceInObject += pathLength;
-        
-        double fresnel = rShclick2(invertedDirection,normal, ni, no);
-        
-        double random = (double)rand()/(RAND_MAX + 1.0f);
-        
-        if (random >= fresnel){ // incoming ray is refracted
-            glm::vec3 refracted_color = glm::exp((-color) * distanceInObject);
-            distanceInObject = 0;
-            return refracted_color;
-        }
-            
     }
     
-    return glm::vec3{1,1,1};
+    double fresnel = rShclick2(invertedDirection,normal, ni, no);
+    
+    double random = (double)rand()/(RAND_MAX + 1.0f);
+    
+    
+    if (random < fresnel) // incoming ray is reflected
+        return glm::vec3{1,1,1};
+    else{ // incoming ray is refracted
+        glm::vec3 refracted_color = glm::exp((-this->absorbance_) * distanceInObject);
+        distanceInObject = 0;
+        return refracted_color;
+    }
 }
 
 double SmoothDieletric::rShclick2( const glm::vec3& w_i, const glm::vec3& normal , double& n1, double& n2) const{

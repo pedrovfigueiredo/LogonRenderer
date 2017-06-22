@@ -55,13 +55,16 @@ void Scene::setMethod(const BVH::SplitMethod* splitMethod){
 void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitMethod)
 {
     
-    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(),
-     glm::vec3{ 0.0f, 0.7f, 0.3f }, 0.2f } ) );/*
-     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{0,191,255}),
-     glm::vec3{ 0.5f, 0.3f, 0.0f }, 0.3f } ) );
-     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new Diffuse(glm::vec3{1,1,0}),
-     glm::vec3{ -0.5f, 0.3f, 0.0f }, 0.3f } ) );*/
-    
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
+        glm::vec3{ 0.6f, 0.7f, 0.6f }, 0.3f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
+        glm::vec3{ 0.0f, 0.7f, 0.6f }, 0.2f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
+        glm::vec3{ -0.4f, 0.7f, 0.6f }, 0.1f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
+        glm::vec3{ -0.7f, 0.7f, 0.6f }, 0.05f } ) );
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
+        glm::vec3{ -0.9f, 0.7f, 0.6f }, 0.025f } ) );
     /*
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(),
      glm::vec3{ -0.3f, 0.31f, -0.3f}, 0.3f} ) );

@@ -32,7 +32,8 @@ public:
     glm::vec3 b_ = { 0.0f, 0.0f, 0.0f };
     glm::vec3 c_ = { 0.0f, 0.0f, 0.0f };
     
-    const float determinant3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i) const;
+private:
+    static const float kIntersectionTestEpsilon_;
 };
 
 #endif /* triangle_h */

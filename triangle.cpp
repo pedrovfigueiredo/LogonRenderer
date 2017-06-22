@@ -8,6 +8,8 @@
 
 #include "triangle.h"
 
+const float Triangle::kIntersectionTestEpsilon_ = 0.000001;
+
 Triangle::Triangle( void ){}
 
 Triangle::Triangle( Material* material, const glm::vec3 &a, const glm::vec3 &b, const glm::vec3 &c ) :
@@ -20,63 +22,44 @@ b_{ b },
 c_{ c }
 {center_ = (positiveCorner_ + negativeCorner_) * 0.5f;}
 
+// Ray-Triangle Intersection based on the paper "Fast, Minimum Storage Ray/Triangle Intersection", by Tomas Moller and  Ben Trumbore.
+// The non-culling approach was chosen.
+
 bool Triangle::intersect( const Ray &ray, IntersectionRecord &intersection_record ) const{
     
-    float beta, gama, t, A;
+    glm::vec3 edge1 = b_ - a_;
+    glm::vec3 edge2 = c_ - a_;
+    glm::vec3 pvec = glm::cross( ray.direction_, edge2 );
     
-    // Calcula-se o determinante da matriz A, como está no livro
+    double det = glm::dot( edge1, pvec );
     
-    A = determinant3x3(a_.x - b_.x, a_.x - c_.x, ray.direction_.x,        // a  b  c //
-                       a_.y -  b_.y, a_.y - c_.y, ray.direction_.y,       // d  e  f //
-                       a_.z - b_.z, a_.z - c_.z, ray.direction_.z);       // g  h  i //
-    
-    // Acha-se o t e checa-se se está contido no intervalo desejado
-    
-    t = (determinant3x3(a_.x - b_.x, a_.x - c_.x, a_.x - ray.origin_.x,        // a  b  c //
-                        a_.y - b_.y, a_.y - c_.y, a_.y - ray.origin_.y,        // d  e  f //
-                        a_.z - b_.z, a_.z - c_.z, a_.z - ray.origin_.z)/ A);   // g  h  i //
-    
-    if (t < 0) {
+    if ( ( det > -Triangle::kIntersectionTestEpsilon_ ) && ( det < Triangle::kIntersectionTestEpsilon_ ) )
         return false;
-    }
     
-    // Calcula-se gama e beta para determinar se o raio intercepta o triângulo
+    double inv_det = 1.0 / det;
     
-    gama = (determinant3x3(a_.x - b_.x, a_.x - ray.origin_.x, ray.direction_.x,        // a  b  c //
-                           a_.y - b_.y, a_.y - ray.origin_.y,ray.direction_.y,         // d  e  f //
-                           a_.z - b_.z, a_.z - ray.origin_.z, ray.direction_.z) / A);  // g  h  i //
+    glm::vec3 tvec{ ray.origin_ - a_ };
     
-    if (gama < 0 || gama > 1) {
+    double u = glm::dot( tvec, pvec ) * inv_det;
+    
+    if ( ( u < 0.0 ) || ( u > 1.0 ) )
         return false;
-    }
     
-    beta = (determinant3x3(a_.x - ray.origin_.x, a_.x - c_.x, ray.direction_.x,        // a  b  c //
-                           a_.y - ray.origin_.y, a_.y - c_.y, ray.direction_.y,        // d  e  f //
-                           a_.z - ray.origin_.z, a_.z - c_.z, ray.direction_.z) / A);  // g  h  i //
+    glm::vec3 qvec{ glm::cross( tvec, edge1 ) };
     
-    if (beta < 0 || beta > 1 - gama) {
+    double v = glm::dot( ray.direction_, qvec ) * inv_det;
+    
+    if ( ( v < 0.0 ) || ( ( u + v ) > 1.0 ) )
         return false;
-    }
     
-    // Nessa parte de registrar o intersectionRecord, a única mudança foi na definição do centro do primitive, já que esse estava explicito na esfera e não está no triângulo.
+    double t = glm::dot( edge2, qvec ) * inv_det;
+    
     
     intersection_record.t_ = t;
     intersection_record.position_ = ray.origin_ + intersection_record.t_ * ray.direction_;
-    
     intersection_record.normal_ = glm::normalize( glm::cross(b_ - a_, c_ - a_));
-    if (glm::dot(intersection_record.normal_, ray.direction_) > 0) {
-        intersection_record.normal_ = -intersection_record.normal_;
-    }
-    
     intersection_record.material = material_;
     
     return true;
-}
-
-
-// Função para calcular o determinante de uma matriz 3x3
-
-const float Triangle::determinant3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i) const{
-    return ((a*e*i) + (b*f*g) + (c*d*h) - (c*e*g) - (b*d*i) - (a*f*h));
 }
 

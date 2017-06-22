@@ -19,7 +19,7 @@ class SmoothDieletric : public Material
 {
 public:
     SmoothDieletric();
-    SmoothDieletric(float IOR);
+    SmoothDieletric(float IOR, glm::vec3 absorbance);
     
     glm::vec3 getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const;
     glm::vec3 getEmittance() const;
@@ -30,6 +30,7 @@ public:
     
 private:
     const float IOR_;
+    glm::vec3 absorbance_;
 };
 
 
