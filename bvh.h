@@ -23,11 +23,6 @@
 #include "intersection_record.h"
 #include "bbox.h"
 
-/* TODO
- *  - Lembrar de fazer método para destruir a porra toda no final.
- *
- */
-
 class BVH
 {
 public:

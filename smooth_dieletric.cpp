@@ -28,10 +28,10 @@ glm::vec3 SmoothDieletric::getNewDirection(glm::vec3& w_i){
     double fresnel;
     glm::vec3 normal = {0,1,0};
     
-    if (glm::dot(w_i, normal) > 0) { // raio vem de fora do objeto
+    if (glm::dot(w_i, normal) > 0) { // ray comes from outside
         ni = 1.0f;
         no = this->IOR_;
-    }else{ // raio está saindo do objeto
+    }else{ // ray comes from inside
         ni = this->IOR_;
         no = 1.0f;
         normal = {0, -1, 0};
@@ -53,10 +53,10 @@ glm::vec3 SmoothDieletric::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLengt
     glm::vec3 invertedDirection = -w_i;
     glm::vec3 normal = {0,1,0};
     
-    if (glm::dot(w_i, normal) > 0) { // raio vem de fora do objeto
+    if (glm::dot(w_i, normal) > 0) { // ray comes from outside
         ni = 1.0f;
         no = this->IOR_;
-    }else{ // raio está saindo do objeto
+    }else{ // ray comes from inside
         ni = this->IOR_;
         no = 1.0f;
         normal = {0, -1, 0};
