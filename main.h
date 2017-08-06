@@ -10,6 +10,7 @@
 #include "object.h"
 #include "rough_conductor.h"
 #include "transformations.h"
+#include "depth_of_field_camera.h"
 
 #endif /* MAIN_H_ */
 

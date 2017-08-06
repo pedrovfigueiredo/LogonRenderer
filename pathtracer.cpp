@@ -75,8 +75,7 @@ void PathTracer::integrate_parallel(){
                     yRandom = ((double)rand()/(RAND_MAX));
                     
                     Ray ray{ camera_.getWorldSpaceRay( glm::vec2{ x + xRandom, y + yRandom } ) };
-                    
-                    buffer_.buffer_data_[x][y] += calculateRadiance(ray, 0, 0) ;
+                    buffer_.buffer_data_[x][y] += calculateRadiance(ray, 0, 0);
                 }
                 
                 buffer_.buffer_data_[x][y] /= numRaysperPixel_;
