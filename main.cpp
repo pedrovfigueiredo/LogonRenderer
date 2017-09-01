@@ -14,8 +14,8 @@ int main()
         glm::vec3{ 0.0f, 1.0f,  2.65f },     // position
         glm::vec3{ 0.0f, 10.0f,  0.0f },     // up
         glm::vec3{ 0.0f, 0.5f,  -1.0f },   // look at
-        0.05, // aperture
-        1.5}; // focal distance
+        0.04, // aperture
+        1.8}; // focal distance
 
     Scene scene;
     
