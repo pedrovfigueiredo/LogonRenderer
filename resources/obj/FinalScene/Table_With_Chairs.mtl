@@ -1,0 +1,19 @@
+newmtl Color
+  Ns 10.0000
+  Ni 1.5000
+  illum 2
+  Ka 0.725 0.71 0.68 # White
+  Kd 0.725 0.71 0.68
+  Ks 0 0 0
+  Ke 0 0 0
+
+
+newmtl Cloth
+  Ns 10.0000
+  Ni 1.5000
+  illum 2
+  Ka 0.98 0.98 0.86 # Cream
+  Kd 0.98 0.98 0.86
+  Ks 0 0 0
+  Ke 0 0 0
+
