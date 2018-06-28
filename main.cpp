@@ -5,6 +5,16 @@ int main()
     unsigned int x_resolution = 512;
     unsigned int y_resolution = 512;
     
+    PinHoleCamera camera(-1.25f,
+                         1.25f,
+                         -1.25f,
+                         1.25f,
+                         2.00f,
+                         glm::ivec2{ x_resolution, y_resolution },
+                         glm::vec3{ 0.0f, 1.0f,  2.65f },
+                         glm::vec3{ 0.0f, 10.0f,  0.0f },
+                         glm::vec3{ 0.0f, 0.5f,  -1.0f });
+    /*
     DepthOfFieldCamera camera{ -1.25f,
         1.25f,
         -1.25f,
@@ -15,8 +25,8 @@ int main()
         glm::vec3{ 0.0f, 10.0f,  0.0f },     // up
         glm::vec3{ 0.0f, 0.5f,  -1.0f },   // look at
         0.04, // aperture
-        1.8}; // focal distance
-
+        1.8}; // focal distance*/
+    
     Scene scene;
     
     std::vector<Object*> objects;
@@ -44,7 +54,7 @@ int main()
     
     Buffer rendering_buffer{ x_resolution, y_resolution };
     glm::vec3 background_color{ 0.0f, 0.0f, 0.0f };
-    const int numRaysPerPixel = 100;
+    const int numRaysPerPixel = 1000;
     const int maximumDepth = 10;
     const int numThreads = 4;
     
