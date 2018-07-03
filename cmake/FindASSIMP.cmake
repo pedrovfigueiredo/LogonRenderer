@@ -11,21 +11,15 @@ FIND_PATH( ASSIMP_INCLUDE_DIR assimp/mesh.h
 /opt/local/include
 "${LogonRenderer_SOURCE_DIR}/contrib"
 )
-if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-FIND_LIBRARY( ASSIMP_LIBRARY assimp
-/usr/lib
-/usr/local/lib
-/opt/local/lib
-"${LogonRenderer_SOURCE_DIR}/lib/x32"
-)
-elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+# DOESNT SUPPPORT X32 SYSTEMS, ONLY X64
+
 FIND_LIBRARY( ASSIMP_LIBRARY assimp
 /usr/lib64
 /usr/local/lib
 /opt/local/lib
-"${LogonRenderer_SOURCE_DIR}/lib/x64"
+"${LogonRenderer_SOURCE_DIR}/lib"
 )
-endif()
 
 IF(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY)
 SET( ASSIMP_FOUND TRUE )
