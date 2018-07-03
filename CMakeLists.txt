@@ -31,12 +31,12 @@ set (ASSIMP_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/contrib/assimp/4.1.0/include/)
 #set (IMAGEMAGICK_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/contrib/imagemagick/7.0.8-3/include/ImageMagick-7/)
 
 # GLM
-find_package(GLM REQUIRED)
-message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
+#find_package(GLM REQUIRED)
+#message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 
 # ASSIMP
-find_package(ASSIMP REQUIRED)
-message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
+#find_package(ASSIMP REQUIRED)
+#message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
 
 # IMAGEMAGICK
 #find_package(IMAGEMAGICK REQUIRED)
