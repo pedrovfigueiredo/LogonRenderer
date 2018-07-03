@@ -14,7 +14,7 @@ FIND_PATH( ASSIMP_INCLUDE_DIR assimp/mesh.h
 
 # DOESNT SUPPPORT X32 SYSTEMS, ONLY X64
 
-FIND_LIBRARY( ASSIMP_LIBRARY assimp
+FIND_LIBRARY( ASSIMP_LIBRARY libassimp
 /usr/lib64
 /usr/local/lib
 /opt/local/lib
