@@ -9,6 +9,7 @@
 #include <ctime>
 #include <thread>
 #include <chrono>
+#include <atomic>
 
 #include "camera.h"
 #include "scene.h"

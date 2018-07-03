@@ -26,17 +26,16 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 # Define the executable
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-set (GLM_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/contrib/glm/0.9.9.0/include/)
-set (ASSIMP_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/contrib/assimp/4.1.0/include/)
-#set (IMAGEMAGICK_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/contrib/imagemagick/7.0.8-3/include/ImageMagick-7/)
+# We need a CMAKE_DIR with some code to find external dependencies
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 # GLM
-#find_package(GLM REQUIRED)
-#message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
+find_package(GLM REQUIRED)
+message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 
 # ASSIMP
-#find_package(ASSIMP REQUIRED)
-#message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
+find_package(ASSIMP REQUIRED)
+message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
 
 # IMAGEMAGICK
 #find_package(IMAGEMAGICK REQUIRED)
@@ -48,9 +47,7 @@ set(LIBS assimp glm)
 # Define the include DIRs
 include_directories(
     "${CMAKE_SOURCE_DIR}/code"
-    ${GLM_INCLUDE_DIR}
-    ${ASSIMP_INCLUDE_DIR}
-#${IMAGEMAGICK_INCLUDE_DIR}
+    "${CMAKE_SOURCE_DIR}/contrib"
 )
 
 # Define the link libraries
