@@ -5,22 +5,27 @@
 # ASSIMP_INCLUDE_DIR - the Assimp include directories
 # ASSIMP_LIBRARIES - link these to use Assimp
 
-FIND_PATH( ASSIMP_INCLUDE_DIR assimp/mesh.h
+FIND_PATH( ASSIMP_INCLUDE_DIR
 /usr/include
 /usr/local/include
 /opt/local/include
 "${LogonRenderer_SOURCE_DIR}/contrib"
 )
 
+IF(ASSIMP_INCLUDE_DIR)
+MESSAGE(STATUS "INCLUDE DIR: ${ASSIMP_INCLUDE_DIR}")
+ENDIF(ASSIMP_INCLUDE_DIR)
+
 # DOESNT SUPPPORT X32 SYSTEMS, ONLY X64
 
-FIND_LIBRARY( ASSIMP_LIBRARY NAMES assimp libassimp libassimp.dylib libassimp.4 libassimp.4.dylib libassimp.4.0.1 libassimp.4.0.1.dylib
-PATHS
-/usr/lib
-/usr/local/lib
-/opt/local/lib
-"${LogonRenderer_SOURCE_DIR}/lib"
+FIND_LIBRARY(ASSIMP_LIBRARY
+	NAMES assimp libassimp libassimp.4 libassimp.4.0.1
+	PATHS /usr/lib /usr/local/lib /opt/local/lib "${LogonRenderer_SOURCE_DIR}/lib"
 )
+
+IF(ASSIMP_LIBRARY)
+MESSAGE(STATUS "LIBRARY: ${ASSIMP_LIBRARY}")
+ENDIF(ASSIMP_LIBRARY)
 
 IF(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY)
 SET( ASSIMP_FOUND TRUE )

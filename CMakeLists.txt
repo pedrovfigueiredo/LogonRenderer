@@ -42,7 +42,7 @@ message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
 #message(STATUS "Found IMAGEMAGICK in ${IMAGEMAGICK_INCLUDE_DIR}")
 
 # Put all libraries into a variable
-set(LIBS assimp glm)
+set(LIBS glm assimp)
 
 # Define the include DIRs
 include_directories(
