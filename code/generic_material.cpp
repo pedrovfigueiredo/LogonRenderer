@@ -20,7 +20,7 @@ GenericMaterial::GenericMaterial(glm::vec3 emittance, glm::vec3 brdf){
     type_ = type::GenericMaterial;
 }
 
-glm::vec3 GenericMaterial::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const{
+glm::vec3 GenericMaterial::getfr(glm::vec3&, glm::vec3& w_o, float, float&) const{
     // pdf == 1/2pi
     // w_o.y == dot(normal,w_o)
     return (brdf_ * w_o.y * (float)(2 *Material::PI));
@@ -30,7 +30,7 @@ glm::vec3 GenericMaterial::getEmittance() const{
     return emittance_;
 }
 
-glm::vec3 GenericMaterial::getNewDirection(glm::vec3& w_i){
+glm::vec3 GenericMaterial::getNewDirection(glm::vec3&){
 
     double theta, phi, r;
     double phiRandom = ((double)rand()/(RAND_MAX));

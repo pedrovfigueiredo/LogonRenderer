@@ -29,7 +29,7 @@ glm::vec3 RoughConductor::getEmittance() const{
     return emittance_;
 }
 
-glm::vec3 RoughConductor::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const{
+glm::vec3 RoughConductor::getfr(glm::vec3& w_i, glm::vec3& w_o, float, float&) const{
 
     if ( w_o.y < 0.0 )
         return glm::vec3{ 0.0, 0.0, 0.0 };

@@ -48,7 +48,7 @@ glm::vec3 SmoothDieletric::getNewDirection(glm::vec3& w_i){
 
 }
 
-glm::vec3 SmoothDieletric::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const{
+glm::vec3 SmoothDieletric::getfr(glm::vec3& w_i, glm::vec3&, float pathLength, float& distanceInObject) const{
     double ni,no;
     glm::vec3 invertedDirection = -w_i;
     glm::vec3 normal = {0,1,0};

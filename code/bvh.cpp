@@ -21,7 +21,7 @@ primitivesInserted(0){
 }
 
 void BVH::constructTree(const SplitMethod& splitMethod){
-    for (int i = 0; i < primitives_.size(); i++)
+    for (int i = 0; i < (long) primitives_.size(); i++)
         primitives_id_.push_back(i);
 
     root = new Bbox();
@@ -83,7 +83,7 @@ void BVH::recursiveConstruct(Bbox* node, int min, int max){
     node->negativeCorner = primitives_[primitives_id_[min]]->negativeCorner_;
     node->positiveCorner = primitives_[primitives_id_[min]]->positiveCorner_;
 
-    for(std::size_t aux = min + 1; aux <= max ; aux++){
+    for(int aux = min + 1; aux <= max ; aux++){
         node->negativeCorner = min_components(primitives_[primitives_id_[aux]]->negativeCorner_, node->negativeCorner);
         node->positiveCorner = max_components(primitives_[primitives_id_[aux]]->positiveCorner_, node->positiveCorner);
     }

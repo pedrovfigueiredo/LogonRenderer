@@ -9,9 +9,10 @@
 #include "object.h"
 
 Object::Object(std::string name,std::string fileName, Material* material, Transformations* transformations):
-fileName_(std::move(fileName)),
 material_(material),
-getMaterialFromMTL(false){
+getMaterialFromMTL(false),
+name_(std::move(name)),
+fileName_(std::move(fileName)){
     if (!transformations)
         transformations_ = new Transformations();
     else
@@ -19,10 +20,10 @@ getMaterialFromMTL(false){
 }
 
 Object::Object(std::string name,std::string fileName, Transformations* transformations):
-name_(std::move(name)),
-fileName_(std::move(fileName)),
 material_(nullptr),
-getMaterialFromMTL(true){
+getMaterialFromMTL(true),
+name_(std::move(name)),
+fileName_(std::move(fileName)){
     if (!transformations)
         transformations_ = new Transformations();
     else

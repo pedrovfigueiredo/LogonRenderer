@@ -24,11 +24,11 @@ Camera::Camera{ resolution,
     position,
     up_vector,
     look_at },
-distance_{distance},
 min_x_{ min_x },
 max_x_{ max_x },
 min_y_{ min_y },
-max_y_{ max_y }
+max_y_{ max_y },
+distance_{distance}
 {}
 
 Ray PinHoleCamera::getWorldSpaceRay( const glm::vec2 &pixel_coord ) const

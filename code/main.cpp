@@ -2,8 +2,8 @@
 
 int main()
 {
-    unsigned int x_resolution = 512;
-    unsigned int y_resolution = 512;
+    unsigned int x_resolution = 1024;
+    unsigned int y_resolution = 1024;
 
     PinHoleCamera camera(-1.25f,
                          1.25f,
@@ -54,7 +54,7 @@ int main()
 
     Buffer rendering_buffer{ x_resolution, y_resolution };
     glm::vec3 background_color{ 0.0f, 0.0f, 0.0f };
-    const int numRaysPerPixel = 1000;
+    const int numRaysPerPixel = 10000;
     const int maximumDepth = 10;
     const int numThreads = 4;
 

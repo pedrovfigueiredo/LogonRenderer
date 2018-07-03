@@ -69,7 +69,7 @@ void PathTracer::integrate_parallel(){
             // Loops over image columns
             for ( std::size_t x = initX; x < endX; x++ )
             {
-                for (std::size_t n = 0; n < numRaysperPixel_; n++) {
+                for (int n = 0; n < numRaysperPixel_; n++) {
 
                     xRandom = ((double)rand()/(RAND_MAX));
                     yRandom = ((double)rand()/(RAND_MAX));

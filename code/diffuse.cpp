@@ -20,7 +20,7 @@ Diffuse::Diffuse( glm::vec3 color){
         brdf_ = {color.x / PI, color.y / PI, color.z / PI};
 }
 
-glm::vec3 Diffuse::getfr(glm::vec3& w_i, glm::vec3& w_o, float pathLength, float& distanceInObject) const{
+glm::vec3 Diffuse::getfr(glm::vec3&, glm::vec3& w_o, float, float&) const{
     // pdf == 1/2pi
     // w_o.y == dot(normal,w_o)
     return (brdf_ * w_o.y * (float)(2 *Material::PI));
@@ -30,7 +30,7 @@ glm::vec3 Diffuse::getEmittance() const{
     return emittance_;
 }
 
-glm::vec3 Diffuse::getNewDirection(glm::vec3& w_i){
+glm::vec3 Diffuse::getNewDirection(glm::vec3&){
 
     double theta, phi, r;
     double phiRandom = ((double)rand()/(RAND_MAX));

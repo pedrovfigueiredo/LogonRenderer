@@ -53,7 +53,7 @@ private:
     std::atomic_int blockController;
 
     //For estimating time left
-    double lastSecs;
+    //double lastSecs;
 
 };
 
