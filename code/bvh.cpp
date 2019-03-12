@@ -24,7 +24,7 @@ void BVH::constructTree(const SplitMethod& splitMethod){
     for (int i = 0; i < (long) primitives_.size(); i++)
         primitives_id_.push_back(i);
 
-    root = new Bbox();
+    root = new BVHNode();
 
     primitivesInserted = 0;
 
@@ -53,43 +53,43 @@ void BVH::constructTree(const SplitMethod& splitMethod){
     primitives_id_.clear();
 }
 
-void BVH::recursiveConstruct(Bbox* node, int min, int max){
+void BVH::recursiveConstruct(BVHNode* node, int min, int max){
 
     // Returns when there are 2 primitives or less on the node
     if ((max - min) < 2) {
         if (max == min) {
             primitivesInserted++;
             node->primitives_id_ = {primitives_id_[min]};
-            node->positiveCorner = primitives_[primitives_id_[min]]->positiveCorner_;
-            node->negativeCorner = primitives_[primitives_id_[min]]->negativeCorner_;
-            node->center = primitives_[primitives_id_[min]]->center_;
+            node->box_.positiveCorner = primitives_[primitives_id_[min]]->positiveCorner_;
+            node->box_.negativeCorner = primitives_[primitives_id_[min]]->negativeCorner_;
+            node->box_.center = primitives_[primitives_id_[min]]->center_;
         }else{
             primitivesInserted += 2;
             node->primitives_id_ = {primitives_id_[min], primitives_id_[max]};
-            node->positiveCorner = glm::vec3{std::max(primitives_[primitives_id_[min]]->positiveCorner_.x,primitives_[primitives_id_[max]]->positiveCorner_.x),
+            node->box_.positiveCorner = glm::vec3{std::max(primitives_[primitives_id_[min]]->positiveCorner_.x,primitives_[primitives_id_[max]]->positiveCorner_.x),
                                              std::max(primitives_[primitives_id_[min]]->positiveCorner_.y,primitives_[primitives_id_[max]]->positiveCorner_.y),
                                              std::max(primitives_[primitives_id_[min]]->positiveCorner_.z,primitives_[primitives_id_[max]]->positiveCorner_.z)};
-            node->negativeCorner = glm::vec3{std::min(primitives_[primitives_id_[min]]->negativeCorner_.x,primitives_[primitives_id_[max]]->negativeCorner_.x),
+            node->box_.negativeCorner = glm::vec3{std::min(primitives_[primitives_id_[min]]->negativeCorner_.x,primitives_[primitives_id_[max]]->negativeCorner_.x),
                                              std::min(primitives_[primitives_id_[min]]->negativeCorner_.y,primitives_[primitives_id_[max]]->negativeCorner_.y),
                                              std::min(primitives_[primitives_id_[min]]->negativeCorner_.z,primitives_[primitives_id_[max]]->negativeCorner_.z)};
-            node->center = (node->positiveCorner + node->negativeCorner) * 0.5f;
+            node->box_.center = (node->box_.positiveCorner + node->box_.negativeCorner) * 0.5f;
         }
 
-        node->leftChild = nullptr;
-        node->rightChild = nullptr;
+        node->left_ = nullptr;
+        node->right_ = nullptr;
         return;
     }
 
-    node->negativeCorner = primitives_[primitives_id_[min]]->negativeCorner_;
-    node->positiveCorner = primitives_[primitives_id_[min]]->positiveCorner_;
+    node->box_.negativeCorner = primitives_[primitives_id_[min]]->negativeCorner_;
+    node->box_.positiveCorner = primitives_[primitives_id_[min]]->positiveCorner_;
 
     for(int aux = min + 1; aux <= max ; aux++){
-        node->negativeCorner = min_components(primitives_[primitives_id_[aux]]->negativeCorner_, node->negativeCorner);
-        node->positiveCorner = max_components(primitives_[primitives_id_[aux]]->positiveCorner_, node->positiveCorner);
+        node->box_.negativeCorner = min_components(primitives_[primitives_id_[aux]]->negativeCorner_, node->box_.negativeCorner);
+        node->box_.positiveCorner = max_components(primitives_[primitives_id_[aux]]->positiveCorner_, node->box_.positiveCorner);
     }
-    node->center = (node->negativeCorner + node->positiveCorner)*0.5f;
+    node->box_.center = (node->box_.negativeCorner + node->box_.positiveCorner)*0.5f;
 
-    glm::vec3 bBoxSize = node->positiveCorner - node->negativeCorner;
+    glm::vec3 bBoxSize = node->box_.positiveCorner - node->box_.negativeCorner;
     float maxDist = std::max({bBoxSize.x, bBoxSize.y, bBoxSize.z});
     int axis;
 
@@ -108,32 +108,32 @@ void BVH::recursiveConstruct(Bbox* node, int min, int max){
     });
 
     // Two Bbox daughters are created, each one containing half the elements of their parent Bbox.
-    node->leftChild = new Bbox;
-    recursiveConstruct(node->leftChild, min, ((max-min)/2) + min);
+    node->left_ = new BVHNode;
+    recursiveConstruct(node->left_, min, ((max-min)/2) + min);
 
-    node->rightChild = new Bbox;
-    recursiveConstruct(node->rightChild, (((max-min)/2) + 1) + min, max);
+    node->right_ = new BVHNode;
+    recursiveConstruct(node->right_, (((max-min)/2) + 1) + min, max);
 
 }
 
-void BVH::SAH_recursiveConstruct(Bbox *node, const std::vector< int > &primitives_index){
+void BVH::SAH_recursiveConstruct(BVHNode *node, const std::vector< int > &primitives_index){
 
     // Calculate box dimensions
-    node->negativeCorner = primitives_[ primitives_index[0] ]->negativeCorner_;
-    node->positiveCorner = primitives_[ primitives_index[0] ]->positiveCorner_;
+    node->box_.negativeCorner = primitives_[ primitives_index[0] ]->negativeCorner_;
+    node->box_.positiveCorner = primitives_[ primitives_index[0] ]->positiveCorner_;
 
     for(int prim_id : primitives_index){
-        node->negativeCorner = min_components(primitives_[prim_id]->negativeCorner_, node->negativeCorner);
-        node->positiveCorner = max_components(primitives_[prim_id]->positiveCorner_, node->positiveCorner);
+        node->box_.negativeCorner = min_components(primitives_[prim_id]->negativeCorner_, node->box_.negativeCorner);
+        node->box_.positiveCorner = max_components(primitives_[prim_id]->positiveCorner_, node->box_.positiveCorner);
     }
 
-    node->center = node->negativeCorner;
+    node->box_.center = node->box_.negativeCorner;
 
 
     // Too few elements, make leaf node were here
 
     // Select best axis to divide
-    glm::vec3 b_size = node->positiveCorner - node->negativeCorner;
+    glm::vec3 b_size = node->box_.positiveCorner - node->box_.negativeCorner;
     float aux = std::max(b_size.x, std::max(b_size.y, b_size.z));
     int axis;
 
@@ -164,7 +164,7 @@ void BVH::SAH_recursiveConstruct(Bbox *node, const std::vector< int > &primitive
         while( trying++ < 32 ){
 
             for(int prim_id : primitives_index){
-                if(primitives_[prim_id]->center_[axis] < node->center[axis])
+                if(primitives_[prim_id]->center_[axis] < node->box_.center[axis])
                     left_prim.push_back(prim_id);
                 else
                     right_prim.push_back(prim_id);
@@ -205,11 +205,11 @@ void BVH::SAH_recursiveConstruct(Bbox *node, const std::vector< int > &primitive
 
             if(min_cost > total_cost){
                 min_cost = total_cost;
-                best_center = node->center;
+                best_center = node->box_.center;
                 best_axis = axis;
             }
 
-            node->center[axis] = node->negativeCorner[axis] + b_size[axis] * ( trying / 32.0f);
+            node->box_.center[axis] = node->box_.negativeCorner[axis] + b_size[axis] * ( trying / 32.0f);
 
             left_prim.clear();
             right_prim.clear();
@@ -221,29 +221,29 @@ void BVH::SAH_recursiveConstruct(Bbox *node, const std::vector< int > &primitive
 
     if( no_div_cost < min_cost){
         node->primitives_id_ = primitives_index;
-        node->leftChild = nullptr;
-        node->rightChild = nullptr;
+        node->left_ = nullptr;
+        node->right_ = nullptr;
         primitivesInserted += primitives_index.size();
         return;
     }
 
-    node->center = best_center;
+    node->box_.center = best_center;
     axis = best_axis;
 
     for(int prim_id : primitives_index){
 
-        if(primitives_[prim_id]->center_[axis] < node->center[axis])
+        if(primitives_[prim_id]->center_[axis] < node->box_.center[axis])
             left_prim.push_back(prim_id);
         else
             right_prim.push_back(prim_id);
     }
 
 
-    node->leftChild = new Bbox;
-    SAH_recursiveConstruct(node->leftChild, left_prim);
+    node->left_ = new BVHNode;
+    SAH_recursiveConstruct(node->left_, left_prim);
 
-    node->rightChild = new Bbox;
-    SAH_recursiveConstruct(node->rightChild, right_prim);
+    node->right_ = new BVHNode;
+    SAH_recursiveConstruct(node->right_, right_prim);
 }
 
 
@@ -281,12 +281,12 @@ bool BVH::intersect( const Ray &ray,
 }
 
 
-bool BVH::traverse(Bbox* node, const Ray &ray, IntersectionRecord &intersection_record) const{
+bool BVH::traverse(BVHNode* node, const Ray &ray, IntersectionRecord &intersection_record) const{
 
     bool intersection_result = false;
 
-    if (node && node->intersect(ray)) {
-        if (!node->leftChild && !node->rightChild) { // is a leaf node
+    if (node && node->box_.intersect(ray)) {
+        if (!node->left_ && !node->right_) { // is a leaf node
             IntersectionRecord tmp_intersection_record;
             for (std::size_t id_index = 0; id_index < node->primitives_id_.size(); id_index++) {
                 if (primitives_[node->primitives_id_[id_index]]->intersect(ray, tmp_intersection_record)) {
@@ -298,9 +298,9 @@ bool BVH::traverse(Bbox* node, const Ray &ray, IntersectionRecord &intersection_
                 }
             }
         }else{ // is not a leaf node
-            if (traverse(node->leftChild, ray, intersection_record))
+            if (traverse(node->left_, ray, intersection_record))
                 intersection_result = true;
-            if (traverse(node->rightChild, ray, intersection_record))
+            if (traverse(node->right_, ray, intersection_record))
                 intersection_result = true;
         }
     }

@@ -26,6 +26,29 @@
 class BVH
 {
 public:
+    
+    struct BVHNode
+    {
+        ~BVHNode( void )
+        {
+            if ( left_ )
+            {
+                delete left_;
+                left_ = nullptr;
+            }
+            
+            if ( right_ )
+            {
+                delete right_;
+                right_ = nullptr;
+            }
+        }
+        
+        std::vector<int> primitives_id_;
+        Bbox box_;
+        BVHNode* left_ = nullptr;                 // Pointer to the left child node (if the current node is a inner node).
+        BVHNode* right_ = nullptr;                // Pointer to right inner node (if the current node is a inner node).
+    };
 
     enum SplitMethod {CenterSorting , SAH};
 
@@ -37,16 +60,16 @@ public:
                    IntersectionRecord &intersection_record ) const;
 
 private:
-    void recursiveConstruct(Bbox* node, int min, int max);
-    void SAH_recursiveConstruct(Bbox *node, const std::vector< int > &primitives_index);
+    void recursiveConstruct(BVHNode* node, int min, int max);
+    void SAH_recursiveConstruct(BVHNode *node, const std::vector< int > &primitives_index);
     glm::vec3 min_components(const glm::vec3 &vecA, const glm::vec3 &vecB);
     glm::vec3 max_components(const glm::vec3 &vecA, const glm::vec3 &vecB);
-    bool traverse(Bbox* node, const Ray &ray, IntersectionRecord &intersection_record) const;
+    bool traverse(BVHNode* node, const Ray &ray, IntersectionRecord &intersection_record) const;
     void printProgress(struct timespec& begin);
 
     const std::vector< Primitive::PrimitiveUniquePtr > &primitives_;
     std::vector<int> primitives_id_;
-    Bbox* root;
+    BVHNode* root;
     std::size_t primitivesInserted;
 };
 

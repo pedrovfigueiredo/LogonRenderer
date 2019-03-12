@@ -7,7 +7,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <unistd.h>
-//#include <Magick++.h>
+#include <Magick++.h>
 
 class Buffer
 {

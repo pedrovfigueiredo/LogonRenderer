@@ -62,7 +62,7 @@ void Buffer::save( const std::string &filename ) const
 
     rendering_file.close();
 
-/*
+
     //Tranforming to png file
     Magick::Image img;
 
@@ -86,7 +86,6 @@ void Buffer::save( const std::string &filename ) const
     //Not proud of this unportable line of system call. Comment if it doesn't run, as it only opens the final file (optional)
     system((std::string("open " + str)).c_str());
 
-*/
 
     std::clog << "finished!\n";
 }

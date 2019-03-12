@@ -23,12 +23,13 @@
 #include "rough_conductor.h"
 #include "bvh.h"
 #include "object.h"
+#include "octree.h"
 
 class Scene
 {
 public:
 
-    enum AcelerationMethod{ NONE, BVH};
+    enum AcelerationMethod{ NONE, BVH, OCTREE};
 
     Scene( void );
 

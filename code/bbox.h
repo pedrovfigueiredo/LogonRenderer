@@ -20,11 +20,15 @@ class Bbox
 {
 public:
     Bbox();
+    Bbox( const glm::vec3 &min,
+         const glm::vec3 &max ) :
+    negativeCorner{ min },
+    positiveCorner{ max },
+    center{ 0.5f * ( min + max ) }
+    {};
+    
     bool intersect(const Ray& ray) const;
 
-    Bbox* leftChild = nullptr;
-    Bbox* rightChild = nullptr;
-    std::vector<int> primitives_id_;
     glm::vec3 center;
     glm::vec3 negativeCorner;
     glm::vec3 positiveCorner;

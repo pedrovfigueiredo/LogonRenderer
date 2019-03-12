@@ -14,7 +14,8 @@ bool Scene::intersect( const Ray &ray,
             //intersect using BVH
             return this->bvh->intersect(ray, intersection_record);
             break;
-
+            
+        case OCTREE:
         case NONE:
             bool intersection_result = false;
             IntersectionRecord tmp_intersection_record;
@@ -54,7 +55,7 @@ void Scene::setMethod(const BVH::SplitMethod* splitMethod){
 }
 void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitMethod)
 {
-
+/*
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
         glm::vec3{ 0.6f, 0.7f, 0.6f }, 0.3f } ) );
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
@@ -64,7 +65,7 @@ void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitM
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
         glm::vec3{ -0.7f, 0.7f, 0.6f }, 0.05f } ) );
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
-        glm::vec3{ -0.9f, 0.7f, 0.6f }, 0.025f } ) );
+        glm::vec3{ -0.9f, 0.7f, 0.6f }, 0.025f } ) );*/
     /*
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(),
      glm::vec3{ -0.3f, 0.31f, -0.3f}, 0.3f} ) );
