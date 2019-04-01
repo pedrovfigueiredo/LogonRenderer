@@ -12,7 +12,8 @@
 
 
 BVH::BVH(const std::vector< Primitive::PrimitiveUniquePtr > &primitives):
-primitives_(primitives),
+AccelerationStructure(primitives),
+sp(SAH),
 primitivesInserted(0){
     if (primitives_.empty()){
         root = nullptr;
@@ -20,7 +21,17 @@ primitivesInserted(0){
     }
 }
 
-void BVH::constructTree(const SplitMethod& splitMethod){
+BVH::BVH(const std::vector< Primitive::PrimitiveUniquePtr > &primitives, const SplitMethod &splitMethod):
+AccelerationStructure(primitives),
+sp(splitMethod),
+primitivesInserted(0){
+    if (primitives_.empty()){
+        root = nullptr;
+        return;
+    }
+}
+
+void BVH::construct(){
     for (int i = 0; i < (long) primitives_.size(); i++)
         primitives_id_.push_back(i);
 
@@ -33,7 +44,7 @@ void BVH::constructTree(const SplitMethod& splitMethod){
     clock_gettime(CLOCK_MONOTONIC, &treeBuildingTimeStart);
     std::thread progressTracker(&BVH::printProgress, this, std::ref(treeBuildingTimeStart));
 
-    switch (splitMethod) {
+    switch (sp) {
         case CenterSorting:
             recursiveConstruct(root, 0, (int)primitives_id_.size() - 1);
             break;
@@ -244,34 +255,6 @@ void BVH::SAH_recursiveConstruct(BVHNode *node, const std::vector< int > &primit
 
     node->right_ = new BVHNode;
     SAH_recursiveConstruct(node->right_, right_prim);
-}
-
-
-glm::vec3 BVH::max_components(const glm::vec3 &vecA, const glm::vec3 &vecB){
-
-    glm::vec3 max;
-
-    for(int i = 0; i < 3; i++)
-        if(vecA[i] > vecB[i])
-            max[i] = vecA[i];
-        else
-            max[i] = vecB[i];
-
-    return max;
-}
-
-
-glm::vec3 BVH::min_components(const glm::vec3 &vecA, const glm::vec3 &vecB){
-
-    glm::vec3 min;
-
-    for(int i = 0; i < 3; i++)
-        if(vecA[i] < vecB[i])
-            min[i] = vecA[i];
-        else
-            min[i] = vecB[i];
-
-    return min;
 }
 
 

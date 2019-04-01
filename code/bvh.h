@@ -22,8 +22,9 @@
 #include "ray.h"
 #include "intersection_record.h"
 #include "bbox.h"
+#include "acceleration_structure.h"
 
-class BVH
+class BVH : public AccelerationStructure
 {
 public:
     
@@ -53,24 +54,24 @@ public:
     enum SplitMethod {CenterSorting , SAH};
 
     BVH(const std::vector< Primitive::PrimitiveUniquePtr > &primitives);
+    
+    BVH(const std::vector< Primitive::PrimitiveUniquePtr > &primitives, const SplitMethod &splitMethod);
 
-    void constructTree(const SplitMethod& splitMethod);
+    void construct();
 
     bool intersect( const Ray &ray,
                    IntersectionRecord &intersection_record ) const;
-
+    
 private:
     void recursiveConstruct(BVHNode* node, int min, int max);
     void SAH_recursiveConstruct(BVHNode *node, const std::vector< int > &primitives_index);
-    glm::vec3 min_components(const glm::vec3 &vecA, const glm::vec3 &vecB);
-    glm::vec3 max_components(const glm::vec3 &vecA, const glm::vec3 &vecB);
     bool traverse(BVHNode* node, const Ray &ray, IntersectionRecord &intersection_record) const;
     void printProgress(struct timespec& begin);
-
-    const std::vector< Primitive::PrimitiveUniquePtr > &primitives_;
+    
     std::vector<int> primitives_id_;
     BVHNode* root;
     std::size_t primitivesInserted;
+    SplitMethod sp;
 };
 
 

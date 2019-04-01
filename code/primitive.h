@@ -7,6 +7,7 @@
 #include "ray.h"
 #include "material.h"
 #include "intersection_record.h"
+#include "bbox.h"
 
 class Primitive
 {
@@ -22,6 +23,8 @@ public:
 
     virtual bool intersect( const Ray &ray,
                             IntersectionRecord &intersection_record ) const = 0;
+    
+    virtual bool intersect( const Bbox &bbox) const = 0;
 
     glm::vec3 center_;
 

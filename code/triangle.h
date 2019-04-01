@@ -16,6 +16,7 @@
 #include "intersection_record.h"
 #include "ray.h"
 #include "material.h"
+#include "bbox.h"
 
 class Triangle : public Primitive
 {
@@ -26,6 +27,8 @@ public:
 
     bool intersect( const Ray &ray,
                    IntersectionRecord &intersection_record ) const;
+    
+    bool intersect( const Bbox &bbox) const;
 
 
     glm::vec3 a_ = { 0.0f, 0.0f, 0.0f };

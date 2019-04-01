@@ -47,10 +47,10 @@ int main()
     //objects.push_back(new Object("Golden_Asian_Dragon","/Users/PedroFigueiredo/Downloads/OBJs_baixados/xyzrgb_dragon.ply", new RoughConductor(0.05, glm::vec3{1.00, 0.71, 0.29}) , glm::vec3{-0.03,0.1,-0.01}, 0.0015));
 
 
-    //scene.load(new Scene::AcelerationMethod(Scene::AcelerationMethod::BVH), new BVH::SplitMethod(BVH::SplitMethod::SAH));
-    if (!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::BVH), new BVH::SplitMethod(BVH::SplitMethod::SAH)))
+    scene.load(new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr);
+    //if (!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr))
     //if(!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr))
-        return EXIT_FAILURE;
+    //    return EXIT_FAILURE;
 
 
     Buffer rendering_buffer{ x_resolution, y_resolution };

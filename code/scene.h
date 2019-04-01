@@ -49,7 +49,7 @@ private:
 
     void setMethod(const BVH::SplitMethod* splitMethod);
 
-    class BVH* bvh;
+    class AccelerationStructure* accelerationStructure;
 
     std::vector< Primitive::PrimitiveUniquePtr > primitives_;
 

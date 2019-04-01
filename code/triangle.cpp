@@ -22,6 +22,21 @@ b_{ b },
 c_{ c }
 {center_ = (positiveCorner_ + negativeCorner_) * 0.5f;}
 
+bool Triangle::intersect( const Bbox &bbox) const{
+    
+    // helper function to decide whether intervals overlap a->b overlaps c->d?
+    
+    // function that projects vertices of the triangle to axis x,y,z and returns interval
+        // Triangle: x(1,0,0),y(0,1,0),z(0,0,1), cross(c-b,a-b) = n, cross(n,x), cross(n,y), cross(n,z)
+    
+    // if one is false, false
+    // if all intersect, true
+    
+    
+    
+    return true;
+}
+
 // Ray-Triangle Intersection based on the paper "Fast, Minimum Storage Ray/Triangle Intersection", by Tomas Moller and  Ben Trumbore.
 // The non-culling approach was chosen.
 

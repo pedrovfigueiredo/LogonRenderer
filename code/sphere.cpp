@@ -10,6 +10,15 @@ Sphere::Sphere( Material* material, const glm::vec3 &center,
         radius_{ radius }
 {}
 
+bool sdfBox(const glm::vec3& p, const glm::vec3& size){
+    glm::vec3 d = abs(p) - size;
+    return glm::min(glm::max(d.x, glm::max(d.y, d.z)), 0.0f) + glm::length(glm::max(d, 0.0f));
+}
+
+bool Sphere::intersect( const Bbox &bbox) const{
+    return sdfBox(center_ - bbox.center, bbox.center - bbox.negativeCorner) > radius_ ? false : true;
+}
+
 bool Sphere::intersect( const Ray &ray,
                         IntersectionRecord &intersection_record ) const
 {

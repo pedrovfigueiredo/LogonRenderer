@@ -12,7 +12,6 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
-#include "primitive.h"
 #include "ray.h"
 #include "intersection_record.h"
 

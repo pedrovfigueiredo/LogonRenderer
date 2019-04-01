@@ -46,23 +46,19 @@ Ray DepthOfFieldCamera::getWorldSpaceRay( const glm::vec2 &pixel_coord ) const
 
     glm::vec3 s { u*a + min_x_,v*b - min_y_, c };
 
-    Ray return_ray = Ray{ position_,
+    Ray primary_ray = Ray{ position_,
         glm::normalize( onb_.getBasisMatrix() * s ) };
 
     if (aperture_ == 0)
-        return return_ray;
-
-    glm::vec3 focal_point = return_ray.origin_ + ((float)focal_distance_ * return_ray.direction_);
-
-    // Generate random r from [0,R]
-    double phi, r;
-    double rRandom = ((double)rand()/(RAND_MAX));
-    double phiRandom = ((double)rand()/(RAND_MAX));
-
-    phi = 2 * Material::PI * phiRandom;
-    r = rRandom * aperture_;
-
-    glm::vec3 randomVec = {r * glm::cos(phi), r * glm::sin(phi) , 0};
-
-    return Ray{return_ray.origin_ + randomVec, glm::normalize(focal_point - (return_ray.origin_ + randomVec))};
+        return primary_ray;
+    
+    glm::vec3 focal_point = primary_ray.origin_ + ((float)focal_distance_ * primary_ray.direction_);
+    
+    float theta,r;
+    theta = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(2 * Material::PI)));
+    r = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(aperture_)));
+    
+    glm::vec3 randomPoint = primary_ray.origin_ + glm::vec3{r * glm::cos(theta), r * glm::sin(theta) , 0};
+    
+    return Ray {randomPoint, glm::normalize(focal_point - randomPoint)};
 }

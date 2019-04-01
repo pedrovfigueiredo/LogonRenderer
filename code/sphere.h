@@ -5,6 +5,7 @@
 #include "primitive.h"
 #include "intersection_record.h"
 #include "ray.h"
+#include "bbox.h"
 
 class Sphere : public Primitive
 {
@@ -17,6 +18,8 @@ public:
 
     bool intersect( const Ray &ray,
                     IntersectionRecord &intersection_record ) const;
+    
+    bool intersect( const Bbox &bbox) const;
 
     float radius_= 1.0f;
 };

@@ -11,11 +11,11 @@ bool Scene::intersect( const Ray &ray,
 {
     switch (method_) {
         case BVH:
-            //intersect using BVH
-            return this->bvh->intersect(ray, intersection_record);
+        case OCTREE:
+            //intersect using Acceleration Structure
+            return this->accelerationStructure->intersect(ray, intersection_record);
             break;
             
-        case OCTREE:
         case NONE:
             bool intersection_result = false;
             IntersectionRecord tmp_intersection_record;
@@ -44,18 +44,26 @@ void Scene::setMethod(const BVH::SplitMethod* splitMethod){
 
     switch (method_) {
         case BVH:
-            bvh = new class BVH(primitives_);
-            bvh->constructTree(*splitMethod);
+            accelerationStructure = new class BVH(primitives_, *splitMethod);
             break;
-        case NONE: // Set bvh pointer to nullptr
+        case OCTREE:
+            accelerationStructure = new class Octree(primitives_);
+            break;
+        case NONE: // Set accelerationStructure pointer to nullptr and return
         default:
-            bvh = nullptr;
+            accelerationStructure = nullptr;
+            return;
             break;
     }
+    accelerationStructure->construct();
 }
 void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitMethod)
 {
-/*
+    
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource(glm::vec3{1.0f, 1.0f, 1.0f}), glm::vec3 {0.0f, 5.0f, 0.0f}, 2.0f}));
+    
+    primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new LightSource(glm::vec3{1.0f, 1.0f, 1.0f}), glm::vec3 {0.0f, -5.0f, 0.0f}, 2.0f}));
+    
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
         glm::vec3{ 0.6f, 0.7f, 0.6f }, 0.3f } ) );
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
@@ -65,7 +73,7 @@ void Scene::load(const AcelerationMethod* method, const BVH::SplitMethod* splitM
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
         glm::vec3{ -0.7f, 0.7f, 0.6f }, 0.05f } ) );
     primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}),
-        glm::vec3{ -0.9f, 0.7f, 0.6f }, 0.025f } ) );*/
+        glm::vec3{ -0.9f, 0.7f, 0.6f }, 0.025f } ) );
     /*
      primitives_.push_back( Primitive::PrimitiveUniquePtr( new Sphere{ new SmoothDieletric(),
      glm::vec3{ -0.3f, 0.31f, -0.3f}, 0.3f} ) );
