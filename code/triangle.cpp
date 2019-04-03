@@ -22,17 +22,62 @@ b_{ b },
 c_{ c }
 {center_ = (positiveCorner_ + negativeCorner_) * 0.5f;}
 
+void Triangle::project(const std::vector<glm::vec3>& vec, const glm::vec3 axis, float& min, float& max) const{
+    min = FLT_MAX;
+    max = FLT_MIN;
+    for(auto& v : vec){
+        float d = glm::dot(v,axis);
+        if (d < min) min = d;
+        if (d > max) max = d;
+    }
+}
+
+// Using SAT theorem
 bool Triangle::intersect( const Bbox &bbox) const{
+    // min and max variables
+    float minTriangle, maxTriangle, minBbox, maxBbox;
     
-    // helper function to decide whether intervals overlap a->b overlaps c->d?
+    // Triangle vertices
+    const std::vector<glm::vec3> vTriangle {a_,b_,c_};
     
-    // function that projects vertices of the triangle to axis x,y,z and returns interval
-        // Triangle: x(1,0,0),y(0,1,0),z(0,0,1), cross(c-b,a-b) = n, cross(n,x), cross(n,y), cross(n,z)
+    // Bbox vertices
+    const glm::vec3 v1 = bbox.negativeCorner;
+    const glm::vec3 v2 = bbox.positiveCorner;
+    const glm::vec3 v3 = glm::vec3{v1.x, v1.y, v2.z};
+    const glm::vec3 v4 = glm::vec3{v1.x, v2.y, v1.z};
+    const glm::vec3 v5 = glm::vec3{v2.x, v1.y, v1.z};
+    const glm::vec3 v6 = glm::vec3{v1.x, v2.y, v2.z};
+    const glm::vec3 v7 = glm::vec3{v2.x, v1.y, v2.z};
+    const glm::vec3 v8 = glm::vec3{v2.x, v2.y, v1.z};
+    const std::vector<glm::vec3> vBbox {v1,v2,v3,v4,v5,v6,v7,v8};
     
-    // if one is false, false
-    // if all intersect, true
+    // Test the box normals (x, y and z axes)
+    glm::vec3 boxNormals[] {glm::vec3{1,0,0}, glm::vec3{0,1,0}, glm::vec3{0,0,1}};
+    for (int i = 0; i < 3; i++) {
+        project(vTriangle, boxNormals[i], minTriangle, maxTriangle);
+        if (maxTriangle < v1[i] || minTriangle > v2[i])
+            return false;
+    }
     
+    // Test the triangle normal
+    glm::vec3 n = glm::cross(a_ - b_, c_ - b_);
+    float triangleOffset = glm::dot(n, a_);
+    project(vBbox, n, minBbox, maxBbox);
+    if (maxBbox < triangleOffset || minBbox > triangleOffset)
+        return false;
     
+    // Test the nine edge cross-products
+    glm::vec3 tEdges[] {a_ - c_, c_ - b_, b_ - a_};
+    
+    for(int i = 0; i < 3; i++)
+        for(int j = 0; j < 3; j++){
+            // The box normals are the same as it's edge tangents
+            glm::vec3 axis = glm::cross(tEdges[i], boxNormals[j]);
+            project(vBbox, axis, minBbox, maxBbox);
+            project(vTriangle, axis, minTriangle, maxTriangle);
+            if (maxBbox < minTriangle || minBbox > maxTriangle)
+                return false;
+        }
     
     return true;
 }

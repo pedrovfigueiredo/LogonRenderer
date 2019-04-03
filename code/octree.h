@@ -35,6 +35,8 @@ public:
         std::vector<int> primitives_id_;
         Bbox box_;
         OctreeNode* children_[8] = {nullptr};   // Pointer to children nodes (if the current node is an inner node).
+        
+        bool isLeaf = true;
     };
     
     Octree(const std::vector< Primitive::PrimitiveUniquePtr > &primitives);
@@ -49,8 +51,8 @@ public:
 private:
     
     void recursiveConstruct(unsigned depth, OctreeNode* node);
-    
     void computeSubBox(int i, int j, int k, Bbox& parent, Bbox& child);
+    bool traverse(OctreeNode* node, const Ray &ray, IntersectionRecord &intersection_record) const;
     
     OctreeNode* root_ = nullptr;
     const unsigned maxDepth_ = 5;

@@ -11,7 +11,7 @@ Sphere::Sphere( Material* material, const glm::vec3 &center,
 {}
 
 bool sdfBox(const glm::vec3& p, const glm::vec3& size){
-    glm::vec3 d = abs(p) - size;
+    const glm::vec3 d = abs(p) - size;
     return glm::min(glm::max(d.x, glm::max(d.y, d.z)), 0.0f) + glm::length(glm::max(d, 0.0f));
 }
 

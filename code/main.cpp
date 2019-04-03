@@ -39,18 +39,18 @@ int main()
     objects.push_back(new Object("Light","/Users/PedroFigueiredo/Documents/RayTracer/OBJs_baixados/light.obj", new LightSource(glm::vec3{10,10,10}), new Transformations(1, {}, {0,0,2})));
     //objects.push_back(new Object("Happy_Budda_Copper","/Users/PedroFigueiredo/Downloads/OBJs_baixados/happy_recon/happy_vrip.ply", new  SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}), new Transformations(10, {}, {0,-0.5,0.3})));
     objects.push_back(new Object("Monkey", "/Users/PedroFigueiredo/Documents/RayTracer/OBJs_baixados/monkey90.obj", new  SmoothDieletric(1.526, glm::vec3{8.0f, 8.0f, 3.0f}), new Transformations(1.2, {new Transformations::Rotation{Transformations::Axis::Y, 0}}, {0,0.8,2})));
-    objects.push_back(new Object("Monkey2", "/Users/PedroFigueiredo/Documents/RayTracer/OBJs_baixados/monkey90.obj", new  SmoothDieletric(1.526, glm::vec3{3.0f, 8.0f, 8.0f}), new Transformations(1.2, {new Transformations::Rotation{Transformations::Axis::Y, 0}}, {-1,1,1})));
-    objects.push_back(new Object("Monkey3", "/Users/PedroFigueiredo/Documents/RayTracer/OBJs_baixados/monkey90.obj", new  SmoothDieletric(1.526, glm::vec3{8.0f, 3.0f, 8.0f}), new Transformations(1.2, {new Transformations::Rotation{Transformations::Axis::Y, 0}}, {1,1,1})));
+    //objects.push_back(new Object("Monkey2", "/Users/PedroFigueiredo/Documents/RayTracer/OBJs_baixados/monkey90.obj", new  SmoothDieletric(1.526, glm::vec3{3.0f, 8.0f, 8.0f}), new Transformations(1.2, {new Transformations::Rotation{Transformations::Axis::Y, 0}}, {-1,1,1})));
+    //objects.push_back(new Object("Monkey3", "/Users/PedroFigueiredo/Documents/RayTracer/OBJs_baixados/monkey90.obj", new  SmoothDieletric(1.526, glm::vec3{8.0f, 3.0f, 8.0f}), new Transformations(1.2, {new Transformations::Rotation{Transformations::Axis::Y, 0}}, {1,1,1})));
     //objects.push_back(new Object("Golden_Dragon","/Users/PedroFigueiredo/Downloads/OBJs_baixados/dragon_recon/dragon_vrip.ply", new RoughConductor(0.05, glm::vec3{1.00, 0.71, 0.29}), new Transformations(10, {}, {0,-0.3,0.4})));
     //objects.push_back(new Object("CornellBox_Empty","/Users/PedroFigueiredo/Documents/RayTracer/RayTracer/CornellBox-Empty-CO.obj", nullptr));
     //objects.push_back(new Object("Corvette","/Users/PedroFigueiredo/Downloads/Chevrolet+Corvette+C7+Stingray+b.obj",new RoughConductor(0.05, glm::vec3{1.00, 0.71, 0.29}), new Transformations(0.1, 90, Transformations::Axis::X, {0,0.2,0})));
     //objects.push_back(new Object("Golden_Asian_Dragon","/Users/PedroFigueiredo/Downloads/OBJs_baixados/xyzrgb_dragon.ply", new RoughConductor(0.05, glm::vec3{1.00, 0.71, 0.29}) , glm::vec3{-0.03,0.1,-0.01}, 0.0015));
 
 
-    scene.load(new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr);
-    //if (!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr))
-    //if(!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr))
-    //    return EXIT_FAILURE;
+    //scene.load(new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr);
+    //if (!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::BVH), nullptr))
+    if(!scene.load(objects, new Scene::AcelerationMethod(Scene::AcelerationMethod::OCTREE), nullptr))
+        return EXIT_FAILURE;
 
 
     Buffer rendering_buffer{ x_resolution, y_resolution };

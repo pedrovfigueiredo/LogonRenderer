@@ -58,9 +58,24 @@ void Octree::recursiveConstruct(unsigned depth, OctreeNode* node){
                 
                 if (intersects){
                     node->children_[k + 2*j + 4*i] = childNode;
+                    node->isLeaf = false;
                     recursiveConstruct(depth + 1, childNode);
-                }
+                }else
+                    delete childNode;
             }
+    
+    // routine for avoiding unneccessary subdivisions
+    for(auto& child : node->children_)
+        if (!child || child->primitives_id_.size() != node->primitives_id_.size())
+            return;
+    
+    for(int i = 0; i < 8; i++){
+        delete node->children_[i];
+        node->children_[i] = nullptr;
+    }
+    
+    node->isLeaf = true;
+        
 }
 
 void Octree::computeSubBox(int i, int j, int k, Bbox& parent, Bbox& child){
@@ -73,5 +88,30 @@ void Octree::computeSubBox(int i, int j, int k, Bbox& parent, Bbox& child){
 
 bool Octree::intersect( const Ray &ray,
                             IntersectionRecord &intersection_record ) const{
-    return true;
+    return traverse(root_, ray, intersection_record);
+}
+
+bool Octree::traverse(OctreeNode* node, const Ray &ray, IntersectionRecord &intersection_record) const{
+    bool intersection_result = false;
+    
+    if (node && node->box_.intersect(ray)) {
+        if (node->isLeaf) {
+            IntersectionRecord tmp_intersection_record;
+            for (std::size_t id_index = 0; id_index < node->primitives_id_.size(); id_index++) {
+                if (primitives_[node->primitives_id_[id_index]]->intersect(ray, tmp_intersection_record)) {
+                    if ( ( tmp_intersection_record.t_ < intersection_record.t_ ) && ( tmp_intersection_record.t_ > 0.0 ) )
+                    {
+                        intersection_record = tmp_intersection_record;
+                        intersection_result = true; // the ray intersects the primitive!
+                    }
+                }
+            }
+        }else{ // is not a leaf node
+            for(auto child : node->children_)
+                if(traverse(child, ray, intersection_record))
+                    intersection_result = true;
+        }
+    }
+    
+    return intersection_result;
 }

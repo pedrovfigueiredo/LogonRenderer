@@ -36,6 +36,8 @@ public:
     glm::vec3 c_ = { 0.0f, 0.0f, 0.0f };
 
 private:
+    void project(const std::vector<glm::vec3>& vec, const glm::vec3 axis, float& min, float& max) const ;
+    
     static const float kIntersectionTestEpsilon_;
 };
 
